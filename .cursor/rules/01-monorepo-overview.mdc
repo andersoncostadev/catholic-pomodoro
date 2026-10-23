@@ -1,0 +1,25 @@
+---
+description: Camadas do Pomodoro Católico e a direção de dependência
+alwaysApply: true
+---
+
+# Pomodoro Católico
+
+Uma página em `src/`. React 19, Vite e TypeScript. Sem API, BFF, conta nem servidor.
+
+| Camada | Pasta | Pode importar |
+|---|---|---|
+| domain | `src/domain` | só o próprio domínio |
+| data | `src/data` | `domain` e `data/protocols` |
+| infra | `src/infra` | o protocolo que implementa |
+| main | `src/main` | compõe adaptador e caso de uso |
+| presentation | `src/presentation` | `domain` (tipos e regras puras) e `main/factories` |
+| app | `src/app` | o fluxo do timer |
+
+## Inviolável
+
+- A tela chama factory. Só `main/factories` instancia storage e caso de uso.
+- Duração, sequência e avanço de fase ficam em `domain/cycle`. O componente não recalcula isso.
+- Chaves: `pomodoro-catolico-v1`, `pomodoro-catolico-fundo`, `pomodoro-catolico-music`. Sem chave nova, salvo a spec pedir.
+- Sem Axios, Next, MSAL, cookie, JWT ou styled-components.
+- Tarefa que cruza camadas: skill `dev-orchestrator`.

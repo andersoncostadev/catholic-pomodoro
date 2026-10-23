@@ -1,0 +1,19 @@
+---
+description: Domínio puro do Pomodoro Católico — regra de ciclo e catálogo, sem React e sem storage
+globs: src/domain/**/*.ts
+alwaysApply: false
+---
+
+# Domínio (`src/domain`)
+
+Modelos, catálogos, constantes e contratos de caso de uso. Regra pura do ciclo em `domain/cycle`.
+
+## Inviolável
+
+- Sem React, sem `localStorage` e sem `window`.
+- Sem importar `data`, `infra`, `main` ou `presentation`.
+- Data de calendário da sequência (`todayKey`, `yesterdayKey`) permanece aqui.
+- Id, crédito, licença, tom, cor sugerida e texto de oração só mudam quando a spec pedir.
+- Interface de caso de uso em kebab-case, método `handle`. A implementação não mora nesta pasta.
+
+Detalhe: skill `domain-business-rules`.

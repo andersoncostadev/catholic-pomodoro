@@ -1,0 +1,19 @@
+---
+description: Caso de uso via IStorage e adaptadores de localStorage, sino e notificação
+globs: src/data/**/*.ts,src/infra/**/*.ts
+alwaysApply: false
+---
+
+# Data e infra
+
+O caso de uso em `src/data/usecases` implementa o contrato de `domain/usecases` e fala só com `IStorage`. `src/infra` é o adaptador concreto.
+
+## Inviolável
+
+- `data` não chama `localStorage` e não importa `infra` nem React.
+- `localStorage` só em `infra/cache/local-storage-adapter.ts`.
+- Sino e notificação só em `infra/browser`. Frequência, duração do sino e o título `Pomodoro Católico` não mudam sem a spec pedir.
+- `get` e `set` de `IStorage` engolem falha de storage.
+- Remapeamento de id antigo de fundo fica no caso de uso de backdrop, usando o catálogo.
+
+Detalhe: skill `data-repository`.

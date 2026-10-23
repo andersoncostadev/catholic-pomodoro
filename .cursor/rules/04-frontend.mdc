@@ -1,0 +1,20 @@
+---
+description: Tela do Pomodoro Católico — chama factory, CSS por data-*, sem recalcular o ciclo
+globs: src/presentation/**/*.{ts,tsx},src/app/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Presentation e app
+
+`src/app/App.tsx` só renderiza o fluxo. A página fica em `src/presentation/flows`. O componente fica em `src/presentation/components`. O CSS fica em `src/presentation/styles/index.css`.
+
+## Inviolável
+
+- A tela chama factory em `main/factories`. Não importa `data/usecases` nem `infra`.
+- Sem `localStorage` e sem `new` de caso de uso.
+- O `.app` continua com `data-theme`, `data-accent`, `data-tone` e `data-phase`.
+- O componente não recalcula duração, sequência nem avanço de fase.
+- Texto e botão continuam legíveis nos fundos, ambientes e cores que a tela já oferece.
+- Crédito de imagem ou canto permanece visível se o bloco continuar na página.
+
+Detalhe: skill `add-ui-flow`.
