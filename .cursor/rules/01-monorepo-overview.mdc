@@ -5,7 +5,7 @@ alwaysApply: true
 
 # Pomodoro Católico
 
-Uma página em `src/`. React 19, Vite e TypeScript. Sem API, BFF, conta nem servidor.
+Uma página em `src/`. React 19, Vite e TypeScript. Não hospeda API, BFF, conta nem servidor. A única saída de rede é o `GET` da liturgia.
 
 | Camada | Pasta | Pode importar |
 |---|---|---|
@@ -21,5 +21,6 @@ Uma página em `src/`. React 19, Vite e TypeScript. Sem API, BFF, conta nem serv
 - A tela chama factory. Só `main/factories` instancia storage e caso de uso.
 - Duração, sequência e avanço de fase ficam em `domain/cycle`. O componente não recalcula isso.
 - Chaves: `pomodoro-catolico-v1`, `pomodoro-catolico-fundo`, `pomodoro-catolico-music`. Sem chave nova, salvo a spec pedir.
+- A página não hospeda API, BFF, conta nem servidor. A única saída de rede é o `GET` da liturgia, no adaptador em `infra/http`, e o texto não é gravado.
 - Sem Axios, Next, MSAL, cookie, JWT ou styled-components.
 - Tarefa que cruza camadas: skill `dev-orchestrator`.

@@ -1,8 +1,12 @@
 import { useState } from 'react'
+import { LiturgyPanel } from '@components/Liturgy'
 import { formatSpent } from '@domain/cycle/format-spent'
 import { saints, scenes, youthScenes } from '@domain/catalogs/saints'
 import type { Scene } from '@domain/models/backdrop/scene'
+import type { LiturgyDay } from '@domain/models/liturgy/day'
 import type { PomodoroController } from '@main/factories/flows/usePomodoro'
+
+type Drawer = 'tasks' | 'settings' | 'streak' | 'liturgy'
 
 type BackdropChoice = {
   saintId: string | null
@@ -14,11 +18,13 @@ export function Panels({
   onClose,
   pomodoro,
   backdrop,
+  liturgy,
 }: {
-  panel: 'tasks' | 'settings' | 'streak'
+  panel: Drawer
   onClose: () => void
   pomodoro: PomodoroController
   backdrop: BackdropChoice
+  liturgy: LiturgyDay | null
 }) {
   return (
     <div className="drawer-root">
@@ -33,14 +39,16 @@ export function Panels({
         {panel === 'tasks' ? <Tasks pomodoro={pomodoro} /> : null}
         {panel === 'settings' ? <Settings pomodoro={pomodoro} backdrop={backdrop} /> : null}
         {panel === 'streak' ? <Streak pomodoro={pomodoro} /> : null}
+        {panel === 'liturgy' && liturgy ? <LiturgyPanel day={liturgy} /> : null}
       </aside>
     </div>
   )
 }
 
-function titleOf(panel: 'tasks' | 'settings' | 'streak'): string {
+function titleOf(panel: Drawer): string {
   if (panel === 'tasks') return 'O que você oferece'
   if (panel === 'settings') return 'Temas'
+  if (panel === 'liturgy') return 'Liturgia de hoje'
   return 'Sequência'
 }
 

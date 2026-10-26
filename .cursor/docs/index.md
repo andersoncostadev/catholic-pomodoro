@@ -1,6 +1,6 @@
 # Cursor index — Pomodoro Católico
 
-Fluxo: **presentation → factory → caso de uso → IStorage → localStorage**. A página não chama servidor.
+Fluxo: **presentation → factory → caso de uso → protocolo → adaptador**. A página não hospeda API. A única saída de rede é o `GET` da liturgia.
 
 | Camada | Pasta | Guardrail |
 |---|---|---|
@@ -10,4 +10,4 @@ Fluxo: **presentation → factory → caso de uso → IStorage → localStorage*
 
 A visão das camadas está em `.cursor/rules/01-monorepo-overview.mdc`. A página sobe em `http://localhost:5174/`.
 
-Tarefa que cruza camadas: skill `dev-orchestrator`. Sem API, BFF, conta nem servidor.
+Tarefa que cruza camadas: skill `dev-orchestrator`. A página não hospeda API, BFF, conta nem servidor.

@@ -4,7 +4,7 @@ Página para rezar e trabalhar no mesmo ritmo: um minuto de oração, vinte e ci
 
 A pessoa começa por uma jaculatória, segue para o foco e, na pausa, reza uma dezena do Terço, faz uma oração breve ou permanece em silêncio. Pode nomear a tarefa oferecida e uma intenção do dia, trocar a cena, o fundo, o ambiente e a cor, e ouvir um canto enquanto o ciclo corre.
 
-Tudo fica neste navegador. Não há conta, sincronização nem servidor.
+Tudo o que a pessoa produz fica neste navegador. Não há conta nem sincronização. A página não hospeda API. A única saída de rede é o `GET` da liturgia do dia a `liturgia.cloudhub.ia.br`, e esse texto não é gravado.
 
 ## Ciclo
 
@@ -50,7 +50,7 @@ React 19, Vite e TypeScript. O estilo está em `src/presentation/styles/index.cs
 src/
   domain/          ciclo, catálogos e contratos
   data/            carga e gravação via IStorage
-  infra/           localStorage, sino e notificação
+  infra/           localStorage, sino, notificação e o GET da liturgia
   main/factories/  único lugar que instancia storage e caso de uso
   presentation/    timer, painéis, método e canto
   app/             casca da página

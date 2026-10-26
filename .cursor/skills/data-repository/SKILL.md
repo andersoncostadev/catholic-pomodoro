@@ -23,3 +23,4 @@ O caso de uso não chama `localStorage`. Ele recebe `IStorage`.
 - Fundo: id padrão `ceia`, `null` significa sem imagem. `pieta` → `assis`, `caminho` → `vocacao`, `jornada` → `votos`, `peregrinos` → `adoracao`.
 - Canto: faixa existente no catálogo ou `null`. Volume entre 0 e 1. Padrão `0.6`.
 - Não apagar ciclo, tarefas, sequência, ajustes, fundo nem canto já gravados.
+- A liturgia do dia não usa `IStorage` nem chave nova. O caso de uso recebe o protocolo de origem.
