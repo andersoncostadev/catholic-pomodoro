@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { chants } from '@domain/catalogs/chants'
+import type { Phase } from '@domain/models/cycle/phase'
 import { makeLoadChant } from '@main/factories/usecases/chant/load-chant'
 import { makeSaveChant } from '@main/factories/usecases/chant/save-chant'
 
 const loadChant = makeLoadChant()
 const saveChant = makeSaveChant()
 
-export function useChant() {
+export function useChant(phase: Phase) {
   const saved = useRef(loadChant.handle()).current
   const [trackId, setTrackId] = useState<string | null>(saved.trackId)
   const [volume, setVolume] = useState(saved.volume)
@@ -17,6 +18,9 @@ export function useChant() {
   volumeRef.current = volume
 
   const playToken = useRef(0)
+  const playingRef = useRef(false)
+  const phaseRef = useRef<Phase | null>(null)
+  playingRef.current = playing
 
   function audio() {
     if (!audioRef.current) {
@@ -46,6 +50,16 @@ export function useChant() {
       audioRef.current?.pause()
     }
   }, [])
+
+  useEffect(() => {
+    const previous = phaseRef.current
+    phaseRef.current = phase
+    if (previous == null || phase !== 'offering' || previous === 'offering') return
+    if (!playingRef.current) return
+    playToken.current += 1
+    audioRef.current?.pause()
+    setPlaying(false)
+  }, [phase])
 
   function play(id: string) {
     const chant = chants.find((item) => item.id === id)

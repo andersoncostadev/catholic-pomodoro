@@ -577,10 +577,6 @@ button:disabled { cursor: default; opacity: 0.55; }
   font-size: 0.78rem;
 }
 
-.drawer-body.liturgy-body {
-  padding-bottom: calc(100dvh - 6rem);
-}
-
 .tabs {
   display: flex;
   flex-wrap: wrap;
@@ -842,6 +838,94 @@ button:disabled { cursor: default; opacity: 0.55; }
   max-width: 100%;
   gap: 0.7rem;
   margin-top: 0.2rem;
+}
+
+.end-focus {
+  display: block;
+  margin: 0.15rem auto 0;
+}
+
+.leave {
+  width: min(100%, 28rem);
+  margin: 0;
+  padding: 0.7rem 0.85rem 0.75rem;
+  border-radius: 1rem;
+  text-align: center;
+  background: var(--glass);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(14px);
+}
+
+.leave p {
+  margin: 0;
+  color: var(--ink);
+}
+
+.leave-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.55rem 0.8rem;
+  margin-top: 0.65rem;
+}
+
+.leave .primary {
+  min-width: 0;
+  padding: 0.55rem 1.1rem;
+}
+
+.leave-go {
+  border: 1px solid var(--line);
+  background: var(--glass);
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 0.55rem 1rem;
+}
+
+.app:not([data-phase="focus"]) .hero {
+  justify-content: flex-start;
+  gap: 0.28rem;
+  padding-top: 0.15rem;
+  padding-bottom: 0.35rem;
+}
+
+.app:not([data-phase="focus"]) .guide {
+  padding: 0.45rem 0.8rem 0.55rem;
+}
+
+.app:not([data-phase="focus"]) .guide h2 {
+  font-size: clamp(1.2rem, 3.6vw, 1.55rem);
+  margin: 0.05rem 0 0.2rem;
+}
+
+.app:not([data-phase="focus"]) .guide p:not(.guide-kicker) {
+  margin-top: 0.2rem;
+}
+
+.app:not([data-phase="focus"]) .beads {
+  margin: 0.35rem 0 0.1rem;
+}
+
+.app:not([data-phase="focus"]) .offer-ask {
+  margin-top: 0.35rem;
+}
+
+.app:not([data-phase="focus"]) .primary {
+  padding: 0.62rem 1.2rem;
+}
+
+.app:not([data-phase="focus"]) .liturgy-line {
+  font-size: clamp(1rem, 2.4vw, 1.2rem);
+}
+
+.app:not([data-phase="focus"]) .down {
+  height: 1.2rem;
+  margin-top: 0;
+}
+
+.app:not([data-phase="focus"]) .down span {
+  height: 0.9rem;
 }
 
 .primary {

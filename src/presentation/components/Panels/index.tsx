@@ -36,7 +36,7 @@ export function Panels({
             ×
           </button>
         </header>
-        {panel === 'tasks' ? <Tasks pomodoro={pomodoro} /> : null}
+        {panel === 'tasks' ? <Tasks pomodoro={pomodoro} onClose={onClose} /> : null}
         {panel === 'settings' ? <Settings pomodoro={pomodoro} backdrop={backdrop} /> : null}
         {panel === 'streak' ? <Streak pomodoro={pomodoro} /> : null}
         {panel === 'liturgy' && liturgy ? <LiturgyPanel day={liturgy} /> : null}
@@ -47,12 +47,12 @@ export function Panels({
 
 function titleOf(panel: Drawer): string {
   if (panel === 'tasks') return 'O que você oferece'
-  if (panel === 'settings') return 'Temas'
+  if (panel === 'settings') return 'Ajustes'
   if (panel === 'liturgy') return 'Liturgia de hoje'
   return 'Sequência'
 }
 
-function Tasks({ pomodoro }: { pomodoro: PomodoroController }) {
+function Tasks({ pomodoro, onClose }: { pomodoro: PomodoroController; onClose: () => void }) {
   const [draft, setDraft] = useState('')
   const { tasks, selectedTaskId } = pomodoro
 
@@ -71,8 +71,9 @@ function Tasks({ pomodoro }: { pomodoro: PomodoroController }) {
         className="add-task"
         onSubmit={(event) => {
           event.preventDefault()
-          pomodoro.addTask(draft)
+          if (!pomodoro.addTask(draft)) return
           setDraft('')
+          onClose()
         }}
       >
         <input
@@ -126,8 +127,54 @@ function Tasks({ pomodoro }: { pomodoro: PomodoroController }) {
 
 function Settings({ pomodoro, backdrop }: { pomodoro: PomodoroController; backdrop: BackdropChoice }) {
   const { settings, updateSettings } = pomodoro
+  const pictured = new Set([...scenes, ...youthScenes].flatMap((scene) => (scene.saintId == null ? [] : [scene.saintId])))
+  const backdropSaints = saints.filter((saint) => !pictured.has(saint.id))
   return (
     <div className="drawer-body">
+      <section>
+        <h3>Tempos</h3>
+        <Stepper label="Oração" value={settings.offeringMin} min={1} max={15} unit="min" onChange={(offeringMin) => updateSettings({ offeringMin })} />
+        <Stepper label="Foco" value={settings.focusMin} min={5} max={90} unit="min" onChange={(focusMin) => updateSettings({ focusMin })} />
+        <Stepper label="Pausa" value={settings.pauseMin} min={1} max={30} unit="min" onChange={(pauseMin) => updateSettings({ pauseMin })} />
+        <Stepper
+          label="Pausa longa"
+          value={settings.longPauseMin}
+          min={5}
+          max={45}
+          unit="min"
+          onChange={(longPauseMin) => updateSettings({ longPauseMin })}
+        />
+        <button
+          type="button"
+          className="text-btn"
+          onClick={() => updateSettings({ offeringMin: 1, focusMin: 25, pauseMin: 5, longPauseMin: 15 })}
+        >
+          Restaurar 1 · 25 · 5 · 15
+        </button>
+      </section>
+      <section>
+        <h3>Tipo de pausa</h3>
+        <div className="choice">
+          {(
+            [
+              ['decade', 'Dezena'],
+              ['brief', 'Oração breve'],
+              ['presence', 'Presença'],
+            ] as const
+          ).map(([id, label]) => (
+            <button key={id} type="button" className={settings.pauseKind === id ? 'is-on' : ''} onClick={() => updateSettings({ pauseKind: id })}>
+              {label}
+            </button>
+          ))}
+        </div>
+        <Switch
+          label="Pausa longa a cada 4 focos"
+          checked={settings.longPauseEnabled}
+          onChange={(longPauseEnabled) => updateSettings({ longPauseEnabled })}
+        />
+        <Switch label="Passar sozinho para a fase seguinte" checked={settings.autoAdvance} onChange={(autoAdvance) => updateSettings({ autoAdvance })} />
+        <Switch label="Sino ao terminar" checked={settings.sound} onChange={(sound) => updateSettings({ sound })} />
+      </section>
       <section>
         <h3>Cenas</h3>
         <div className="saint-grid" role="listbox" aria-label="Cenas">
@@ -189,7 +236,7 @@ function Settings({ pomodoro, backdrop }: { pomodoro: PomodoroController; backdr
             <span className="saint-plain" aria-hidden="true" />
             <small>Nenhum</small>
           </button>
-          {saints.map((saint) => {
+          {backdropSaints.map((saint) => {
             const active = backdrop.saintId === saint.id
             return (
               <button
@@ -264,50 +311,6 @@ function Settings({ pomodoro, backdrop }: { pomodoro: PomodoroController; backdr
             />
           ))}
         </div>
-      </section>
-      <section>
-        <h3>Tempos</h3>
-        <Stepper label="Oração" value={settings.offeringMin} min={1} max={15} unit="min" onChange={(offeringMin) => updateSettings({ offeringMin })} />
-        <Stepper label="Foco" value={settings.focusMin} min={5} max={90} unit="min" onChange={(focusMin) => updateSettings({ focusMin })} />
-        <Stepper label="Pausa" value={settings.pauseMin} min={1} max={30} unit="min" onChange={(pauseMin) => updateSettings({ pauseMin })} />
-        <Stepper
-          label="Pausa longa"
-          value={settings.longPauseMin}
-          min={5}
-          max={45}
-          unit="min"
-          onChange={(longPauseMin) => updateSettings({ longPauseMin })}
-        />
-        <button
-          type="button"
-          className="text-btn"
-          onClick={() => updateSettings({ offeringMin: 1, focusMin: 25, pauseMin: 5, longPauseMin: 15 })}
-        >
-          Restaurar 1 · 25 · 5
-        </button>
-      </section>
-      <section>
-        <h3>Tipo de pausa</h3>
-        <div className="choice">
-          {(
-            [
-              ['decade', 'Dezena'],
-              ['brief', 'Oração breve'],
-              ['presence', 'Presença'],
-            ] as const
-          ).map(([id, label]) => (
-            <button key={id} type="button" className={settings.pauseKind === id ? 'is-on' : ''} onClick={() => updateSettings({ pauseKind: id })}>
-              {label}
-            </button>
-          ))}
-        </div>
-        <Switch
-          label="Pausa longa a cada 4 focos"
-          checked={settings.longPauseEnabled}
-          onChange={(longPauseEnabled) => updateSettings({ longPauseEnabled })}
-        />
-        <Switch label="Passar sozinho para a fase seguinte" checked={settings.autoAdvance} onChange={(autoAdvance) => updateSettings({ autoAdvance })} />
-        <Switch label="Sino ao terminar" checked={settings.sound} onChange={(sound) => updateSettings({ sound })} />
       </section>
       <p className="footnote">Tudo fica neste navegador. Sem conta.</p>
     </div>

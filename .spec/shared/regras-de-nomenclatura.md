@@ -37,3 +37,4 @@
 - Sem número da spec, sem português e sem prefixo `fix/`.
 - A spec `007-liturgia-do-dia` usa a branch `feature/liturgy-of-the-day`.
 - A spec `008-leitura-da-liturgia` usa a branch `feature/liturgy-reading`.
+- A spec `009-ciclo-na-primeira-tela` usa a branch `feature/clearer-cycle`.

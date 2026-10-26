@@ -5,7 +5,7 @@ import { aveMaria, briefPrayers, gloria, jaculatories, mysterySetFor, paiNosso, 
 import type { Phase } from '@domain/models/cycle/phase'
 import type { LiturgyDay } from '@domain/models/liturgy/day'
 import type { PomodoroController } from '@main/factories/flows/usePomodoro'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 const TABS = [
   { id: 'offering', label: 'Oração' },
@@ -35,13 +35,19 @@ export function TimerHero({
   const pauseTabLabel = session.phase === 'longPause' ? 'Pausa longa' : 'Pausa'
   const dots = session.phase === 'longPause' ? 4 : stats.cycleFocusCount
   const isFocus = session.phase === 'focus'
-  const isPresence = (session.phase === 'pause' || session.phase === 'longPause') && settings.pauseKind === 'presence'
-  const showQuote = session.phase === 'pause' || session.phase === 'longPause'
+  const isPause = session.phase === 'pause' || session.phase === 'longPause'
+  const isPresence = isPause && settings.pauseKind === 'presence'
+  const quoteFromStart = isPause && settings.pauseKind !== 'decade'
+  const stayRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    if (!pomodoro.leavePhase) return
+    stayRef.current?.focus()
+  }, [pomodoro.leavePhase])
 
   return (
     <section className="hero" id="timer">
       {liturgy && !isFocus ? <LiturgyLine day={liturgy} onOpen={onOpenLiturgy} /> : null}
-      {isFocus ? null : <p className="kicker">Um minuto de oração, vinte e cinco de foco, cinco de pausa.</p>}
       <div className="tabs" role="tablist" aria-label="Fases do ciclo">
         {TABS.map((tab) => {
           const selected = tab.id === 'pause' ? session.phase === 'pause' || session.phase === 'longPause' : session.phase === tab.id
@@ -51,15 +57,29 @@ export function TimerHero({
               key={tab.id}
               role="tab"
               aria-selected={selected}
+              aria-label={count > 0 ? undefined : tab.label}
               className={selected ? 'tab is-on' : 'tab'}
               onClick={() => pomodoro.selectPhase(tab.id)}
             >
               {tab.id === 'pause' ? pauseTabLabel : tab.label}
-              <span>{count}</span>
+              {count > 0 ? <span>{count}</span> : null}
             </button>
           )
         })}
       </div>
+      {pomodoro.leavePhase ? (
+        <div className="leave" role="group" aria-label="Sair desta fase? O tempo em curso não fica registrado.">
+          <p>Sair desta fase? O tempo em curso não fica registrado.</p>
+          <div className="leave-actions">
+            <button type="button" className="primary" ref={stayRef} onClick={pomodoro.stayPhase}>
+              Ficar
+            </button>
+            <button type="button" className="leave-go" onClick={pomodoro.confirmLeave}>
+              Sair mesmo assim
+            </button>
+          </div>
+        </div>
+      ) : null}
 
       <div
         className="dial"
@@ -101,6 +121,11 @@ export function TimerHero({
           <ResetIcon />
         </button>
       </div>
+      {pomodoro.canEndFocus ? (
+        <button type="button" className="text-btn end-focus" onClick={pomodoro.endFocus}>
+          Encerrar este foco
+        </button>
+      ) : null}
 
       {notice ? (
         <p className="notice" role="status">
@@ -124,17 +149,11 @@ export function TimerHero({
         taskTitle={task?.title ?? null}
         intention={pomodoro.intention}
         onOpenTasks={onOpenTasks}
+        quote={isPause && settings.pauseKind === 'decade' ? quote : null}
+        onNextQuote={nextQuote}
       />
 
-      {showQuote ? (
-        <figure className="quote">
-          <blockquote>“{quote.text}”</blockquote>
-          <figcaption>{quote.author}</figcaption>
-          <button type="button" onClick={nextQuote}>
-            Outra frase
-          </button>
-        </figure>
-      ) : null}
+      {quoteFromStart ? <QuoteBlock quote={quote} onNext={nextQuote} /> : null}
 
       {isFocus ? null : (
         <a className="down" href="#metodo" aria-label="Rolar para o método">
@@ -176,6 +195,8 @@ function PhaseGuide({
   taskTitle,
   intention,
   onOpenTasks,
+  quote,
+  onNextQuote,
 }: {
   phase: Phase
   entryId: number
@@ -187,6 +208,8 @@ function PhaseGuide({
   taskTitle: string | null
   intention: string
   onOpenTasks: () => void
+  quote: { text: string; author: string } | null
+  onNextQuote: () => void
 }) {
   if (phase === 'offering') {
     return (
@@ -216,7 +239,21 @@ function PhaseGuide({
       longEnabled={longPause}
       focusToday={focusToday}
       cycleFocusCount={cycleFocusCount}
+      quote={quote}
+      onNextQuote={onNextQuote}
     />
+  )
+}
+
+function QuoteBlock({ quote, onNext }: { quote: { text: string; author: string }; onNext: () => void }) {
+  return (
+    <figure className="quote">
+      <blockquote>“{quote.text}”</blockquote>
+      <figcaption>{quote.author}</figcaption>
+      <button type="button" onClick={onNext}>
+        Outra frase
+      </button>
+    </figure>
   )
 }
 
@@ -264,6 +301,8 @@ function PauseGuide({
   longEnabled,
   focusToday,
   cycleFocusCount,
+  quote,
+  onNextQuote,
 }: {
   entryId: number
   kind: PomodoroController['settings']['pauseKind']
@@ -271,6 +310,8 @@ function PauseGuide({
   longEnabled: boolean
   focusToday: number
   cycleFocusCount: number
+  quote: { text: string; author: string } | null
+  onNextQuote: () => void
 }) {
   const { set, weekday } = mysterySetFor()
   const index = mysteryIndex(long, longEnabled, focusToday, cycleFocusCount)
@@ -291,6 +332,8 @@ function PauseGuide({
           fruit={mystery.fruit}
           fifth={fifth?.title ?? null}
           long={long}
+          quote={quote}
+          onNextQuote={onNextQuote}
         />
       ) : null}
       {kind === 'brief' ? <BriefPrayer entryId={entryId} long={long} /> : null}
@@ -313,6 +356,8 @@ function Decade({
   fruit,
   fifth,
   long,
+  quote,
+  onNextQuote,
 }: {
   entryId: number
   setName: string
@@ -321,6 +366,8 @@ function Decade({
   fruit: string
   fifth: string | null
   long: boolean
+  quote: { text: string; author: string } | null
+  onNextQuote: () => void
 }) {
   const [step, setStep] = useState(0)
   useEffect(() => {
@@ -359,6 +406,7 @@ function Decade({
       <button type="button" className="text-btn" onClick={() => setStep((value) => Math.min(13, value + 1))} disabled={done}>
         {step === 0 ? 'Começar a dezena' : done ? 'Dezena rezada' : 'Rezei esta conta'}
       </button>
+      {done && quote ? <QuoteBlock quote={quote} onNext={onNextQuote} /> : null}
       <details>
         <summary>Ver a oração</summary>
         <p>{prayer}</p>

@@ -13,7 +13,7 @@ Toda mudança funcional ou visual deve ter uma spec ativa antes da implementaç�
 
 ## Specs ativas
 
-Nenhuma spec ativa.
+Nenhuma.
 
 ## Specs arquivadas
 
@@ -25,3 +25,4 @@ Nenhuma spec ativa.
 - [006-outra-jaculatoria](./archive/006-outra-jaculatoria/spec.md) — na oração, troca a jaculatória da entrada sem alterar a contagem do dia. Concluída em 2026-10-23.
 - [007-liturgia-do-dia](./archive/007-liturgia-do-dia/spec.md) — celebração do dia no hero e liturgia num painel, pedida a um serviço público, com o ciclo seguindo se a rede falhar. Concluída em 2026-10-26.
 - [008-leitura-da-liturgia](./archive/008-leitura-da-liturgia/spec.md) — versículo separado da palavra, refrão antes do salmo, atalho para coleta, salmo e evangelho, e a linha do hero reconhecível como botão. Concluída em 2026-10-26.
+- [009-ciclo-na-primeira-tela](./archive/009-ciclo-na-primeira-tela/spec.md) — oração e pausa na primeira tela, oferecimento que fecha o painel, e ajustes do ritmo sem descartar um tempo em curso. Concluída em 2026-10-26.

@@ -8,10 +8,10 @@ Página única para rezar e trabalhar no mesmo ritmo: um minuto de oração, vin
 
 - Começa pela oração, com uma jaculatória. Pode trocar a frase daquela entrada e segue para o foco e para a pausa.
 - Na pausa, reza uma dezena do Terço, uma oração breve ou permanece em silêncio.
-- Dá nome à tarefa oferecida e, se quiser, a uma intenção do dia.
-- Acompanha a sequência: um dia conta quando ao menos um foco é concluído.
-- Troca a cena, o fundo, o ambiente (Capela, Alvorada, Noite) e a cor do anel e do botão.
-- Ouve um canto enquanto o ciclo corre.
+- Dá nome à tarefa oferecida e, se quiser, a uma intenção do dia. Adicionar um nome grava a tarefa, deixa essa tarefa escolhida e fecha o painel. Intenção, marcar, escolher e remover permanecem no painel.
+- Acompanha a sequência: um dia conta quando ao menos um foco é concluído. Pode encerrar o foco antes do zero: o dia entra na sequência e a tarefa escolhida recebe os segundos que já passaram nessa entrada.
+- Abre Ajustes para mudar os tempos, o tipo de pausa, a cena, o fundo, o ambiente (Capela, Alvorada, Noite) e a cor do anel e do botão.
+- Ouve um canto enquanto o ciclo corre. Ao entrar na oração, o canto que estiver tocando pausa e não volta sozinho; a faixa escolhida permanece, e a pessoa pode tocá-la de novo.
 - Lê, abaixo do timer, o método, o sentido e as perguntas frequentes.
 - Na oração e na pausa, vê a celebração do dia e pode abrir a liturgia.
 

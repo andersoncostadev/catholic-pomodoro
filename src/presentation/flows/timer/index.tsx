@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { MusicMenu } from '@components/MusicMenu'
 import { Panels } from '@components/Panels'
 import { Story } from '@components/Story'
@@ -17,6 +17,8 @@ export function TimerFlow() {
   const liturgy = useLiturgy()
   const [panel, setPanel] = useState<Panel>(null)
   const days = pomodoro.stats.streak
+  const stayPhaseRef = useRef(pomodoro.stayPhase)
+  stayPhaseRef.current = pomodoro.stayPhase
 
   useEffect(() => {
     document.body.style.overflow = panel ? 'hidden' : ''
@@ -30,13 +32,18 @@ export function TimerFlow() {
   }, [panel, liturgy])
 
   useEffect(() => {
-    if (!panel) return
+    if (!panel && !pomodoro.leavePhase) return
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setPanel(null)
+      if (event.key !== 'Escape') return
+      if (panel) {
+        setPanel(null)
+        return
+      }
+      stayPhaseRef.current()
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [panel])
+  }, [panel, pomodoro.leavePhase])
 
   function begin() {
     document.getElementById('timer')?.scrollIntoView({ behavior: 'smooth' })
@@ -78,7 +85,7 @@ export function TimerFlow() {
                 <span className="days-bead" aria-hidden="true" />
                 {days} {days === 1 ? 'dia' : 'dias'}
               </button>
-              <MusicMenu dismiss={panel !== null} onOpen={() => setPanel(null)} />
+              <MusicMenu phase={pomodoro.session.phase} dismiss={panel !== null} onOpen={() => setPanel(null)} />
               <button
                 type="button"
                 className="icon-btn"
@@ -92,7 +99,7 @@ export function TimerFlow() {
               <button
                 type="button"
                 className="icon-btn"
-                aria-label="Temas"
+                aria-label="Ajustes"
                 aria-pressed={panel === 'settings'}
                 onClick={() => setPanel(panel === 'settings' ? null : 'settings')}
               >

@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { chants } from '@domain/catalogs/chants'
+import type { Phase } from '@domain/models/cycle/phase'
 import { useChant } from '@main/factories/flows/useChant'
 
-export function MusicMenu({ dismiss, onOpen }: { dismiss: boolean; onOpen: () => void }) {
-  const { trackId, volume, playing, error, choose, setLevel } = useChant()
+export function MusicMenu({ phase, dismiss, onOpen }: { phase: Phase; dismiss: boolean; onOpen: () => void }) {
+  const { trackId, volume, playing, error, choose, setLevel } = useChant(phase)
   const [open, setOpen] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
   const current = chants.find((chant) => chant.id === trackId)

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { durationSec } from '@domain/cycle/duration-sec'
+import { elapsedSec } from '@domain/cycle/elapsed-sec'
 import { nextPhaseAfter } from '@domain/cycle/next-phase-after'
 import { normalizeStats } from '@domain/cycle/normalize-stats'
 import { noticeFor } from '@domain/cycle/notice-for'
@@ -38,6 +39,7 @@ export function usePomodoro() {
   const [intention, setIntention] = useState(initial.intention)
   const [quoteIndex, setQuoteIndex] = useState(initial.quoteIndex)
   const [notice, setNotice] = useState<string | null>(null)
+  const [leavePhase, setLeavePhase] = useState<Phase | null>(null)
   const [now, setNow] = useState(() => Date.now())
 
   const snap = useRef<Bundle>(initial)
@@ -91,7 +93,24 @@ export function usePomodoro() {
     const current = snap.current
     if (!current.session.running || current.session.endsAt !== endsAt) return
     if (alreadyHandled(endsAt)) return
-    markHandled(endsAt)
+    settlePhase()
+  }
+
+  function endFocus() {
+    const current = snap.current
+    if (current.session.phase !== 'focus') return
+    if (elapsedSec(current.session, Date.now()) < 1) return
+    if (current.session.endsAt != null && alreadyHandled(current.session.endsAt)) return
+    settlePhase()
+  }
+
+  function settlePhase() {
+    const current = snap.current
+    const endsAt = current.session.endsAt
+    if (endsAt != null) {
+      if (alreadyHandled(endsAt)) return
+      markHandled(endsAt)
+    }
 
     const finished = current.session.phase
     let nextStats = normalizeStats(current.stats)
@@ -104,9 +123,10 @@ export function usePomodoro() {
       const recorded = recordFocus(nextStats, current.settings.longPauseEnabled)
       nextStats = recorded.stats
       wrapped = recorded.wrapped
+      const spent = elapsedSec(current.session, Date.now())
       if (current.selectedTaskId) {
         nextTasks = current.tasks.map((task) =>
-          task.id === current.selectedTaskId ? { ...task, focusSeconds: task.focusSeconds + current.session.plannedSec } : task,
+          task.id === current.selectedTaskId ? { ...task, focusSeconds: task.focusSeconds + spent } : task,
         )
       }
     } else {
@@ -114,7 +134,7 @@ export function usePomodoro() {
     }
 
     const nextPhase = nextPhaseAfter(finished, wrapped)
-    const overdue = Date.now() - endsAt > 2000
+    const overdue = endsAt != null && Date.now() - endsAt > 2000
     const auto = current.settings.autoAdvance && !overdue
     const sec = durationSec(nextPhase, current.settings)
     const nextSession: Session = {
@@ -132,6 +152,7 @@ export function usePomodoro() {
     setTasks(nextTasks)
     setSession(nextSession)
     setNotice(message)
+    setLeavePhase(null)
     if (current.settings.sound) playBell()
     notifyIfHidden(message)
   }
@@ -159,20 +180,42 @@ export function usePomodoro() {
   function reset() {
     const current = snap.current
     const sec = durationSec(current.session.phase, current.settings)
+    setLeavePhase(null)
     setSession({
       phase: current.session.phase,
       running: false,
       endsAt: null,
       remainingSec: sec,
       plannedSec: sec,
-      entryId: current.session.entryId + 1,
+      entryId: current.session.entryId,
     })
   }
 
   function selectPhase(tab: 'offering' | 'focus' | 'pause') {
     const current = snap.current
     const phase: Phase = tab === 'pause' && current.session.phase === 'longPause' ? 'longPause' : tab
-    if (current.session.phase === phase && !current.session.running) return
+    if (current.session.phase === phase) return
+    if (current.session.running) {
+      setLeavePhase(phase)
+      return
+    }
+    setLeavePhase(null)
+    replacePhase(phase)
+  }
+
+  function stayPhase() {
+    setLeavePhase(null)
+  }
+
+  function confirmLeave() {
+    const phase = leavePhase
+    if (!phase) return
+    setLeavePhase(null)
+    replacePhase(phase)
+  }
+
+  function replacePhase(phase: Phase) {
+    const current = snap.current
     const sec = durationSec(phase, current.settings)
     setSession({
       phase,
@@ -186,6 +229,7 @@ export function usePomodoro() {
 
   function beginOffering() {
     const current = snap.current
+    setLeavePhase(null)
     unlockAudio()
     askNotification()
     const sec = durationSec('offering', current.settings)
@@ -218,10 +262,11 @@ export function usePomodoro() {
 
   function addTask(title: string) {
     const clean = title.trim()
-    if (!clean) return
+    if (!clean) return false
     const task: Task = { id: crypto.randomUUID(), title: clean.slice(0, 140), done: false, focusSeconds: 0 }
     setTasks((current) => [task, ...current])
     setSelectedTaskId(task.id)
+    return true
   }
 
   function toggleTask(id: string) {
@@ -243,7 +288,9 @@ export function usePomodoro() {
   }
 
   const remaining = remainingOf(session, Date.now())
+  const elapsed = elapsedSec(session, Date.now())
   const phaseTotal = durationSec(session.phase, settings)
+  const canEndFocus = session.phase === 'focus' && elapsed >= 1
 
   useEffect(() => {
     if (session.running) {
@@ -266,7 +313,10 @@ export function usePomodoro() {
     stats,
     session,
     remaining,
+    elapsed,
+    canEndFocus,
     phaseTotal,
+    leavePhase,
     intention,
     setIntention,
     quoteIndex,
@@ -276,6 +326,9 @@ export function usePomodoro() {
     toggle,
     reset,
     selectPhase,
+    stayPhase,
+    confirmLeave,
+    endFocus,
     beginOffering,
   }
 }
