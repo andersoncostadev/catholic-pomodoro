@@ -16,15 +16,15 @@ Jaculatórias, orações breves, mistérios e perguntas frequentes não mudam. S
 
 ## Referências de Projeto
 
-- [Produto](../../memory/produto.md)
-- [Contexto técnico global](../../memory/contexto-tecnico.md)
-- [Estrutura do projeto](../../memory/estrutura.md)
+- [Produto](../../../memory/produto.md)
+- [Contexto técnico global](../../../memory/contexto-tecnico.md)
+- [Estrutura do projeto](../../../memory/estrutura.md)
 
 ## Referências Compartilhadas
 
-- [Como executar](../../shared/como-executar.md)
-- [Regras de nomenclatura](../../shared/regras-de-nomenclatura.md)
-- Modelo de origem: [modelo-base](../../templates/modelo-base.md)
+- [Como executar](../../../shared/como-executar.md)
+- [Regras de nomenclatura](../../../shared/regras-de-nomenclatura.md)
+- Modelo de origem: [modelo-base](../../../templates/modelo-base.md)
 
 ## Observações Locais
 
@@ -118,4 +118,4 @@ Depois da verificação, o navegador voltou à oração, 0 dias, Ceia, Capela, f
 
 ## Encerramento
 
-Esta spec termina apenas quando todos os itens estiverem marcados e com evidência registrada, no formato definido em [Como executar](../../shared/como-executar.md).
+Esta spec termina apenas quando todos os itens estiverem marcados e com evidência registrada, no formato definido em [Como executar](../../../shared/como-executar.md).

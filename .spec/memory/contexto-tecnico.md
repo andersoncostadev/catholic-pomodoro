@@ -15,12 +15,14 @@
 main.tsx
   -> app/App.tsx
        -> presentation/flows/timer
-            -> main/factories/flows (usePomodoro, useBackdrop, useChant)
+            -> main/factories/flows (usePomodoro, useBackdrop, useChant, useLiturgy)
                  -> main/factories/usecases (makeLoad*, makeSave*)
                       -> data/usecases
                            -> data/protocols/cache (IStorage)
                                 -> infra/cache/local-storage-adapter
-                 -> domain/cycle e domain/catalogs
+                           -> data/protocols/http (corpo da liturgia ou null)
+                                -> infra/http (GET da liturgia)
+                 -> domain/cycle, domain/liturgy e domain/catalogs
                  -> infra/browser (sino e notificação), só dentro da factory
 ```
 
@@ -43,7 +45,7 @@ Import novo usa o alias, sem sufixo `.ts`.
 
 ## Decisões já tomadas
 
-- Uma página. A barra abre painéis; não há rotas. Não há Next, App Router, HTTP, Axios, MSAL, cookie nem login.
+- Uma página. A barra abre painéis; não há rotas. Não há Next, App Router, Axios, MSAL, cookie nem login. A página não hospeda API. A única saída de rede é `GET https://liturgia.cloudhub.ia.br/v1/liturgia`, com `dia`, `mes` e `ano`. O texto não entra no `localStorage`.
 - O ciclo padrão é 1 · 25 · 5, com pausa longa de 15 minutos a cada quatro focos.
 - A pausa pode ser dezena, oração breve ou presença.
 - Ambientes: `capela` (escuro quente), `alvorada` (claro) e `noite` (azul escuro).
@@ -56,7 +58,7 @@ Import novo usa o alias, sem sufixo `.ts`.
 
 ## Restrições
 
-- Não introduzir backend, conta, login nem gravação fora do `localStorage`.
+- Não introduzir backend, conta, login nem gravação fora do `localStorage`. A página não hospeda API. A única saída de rede é o `GET` da liturgia, e esse texto não é gravado.
 - Não quebrar a leitura das chaves `pomodoro-catolico-v1`, `pomodoro-catolico-fundo` e `pomodoro-catolico-music`. Campo novo entra com valor padrão quando o JSON antigo não o tem.
 - Não mudar duração, sequência ou avanço de fase dentro de um componente.
 - Não aplicar um véu ou uma cor que deixe texto ou botão ilegível num fundo ou ambiente que o app já oferece.

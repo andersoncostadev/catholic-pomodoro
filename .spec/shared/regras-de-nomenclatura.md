@@ -29,4 +29,11 @@
 ## Convenção de nomes de mudança
 
 - Evite nomes genéricos como `fix` ou `update`.
-- O nome diz o efeito para quem usa o app: `cena-fundo-e-fase`, `pausa-dezena`, `sequencia-na-barra`.
+- O nome da spec diz o efeito para quem usa o app, em português: `cena-fundo-e-fase`, `pausa-dezena`, `sequencia-na-barra`.
+
+## Convenção de branch
+
+- O nome é `feature/` mais o efeito em inglês, em minúsculas e com hífen.
+- Sem número da spec, sem português e sem prefixo `fix/`.
+- A spec `007-liturgia-do-dia` usa a branch `feature/liturgy-of-the-day`.
+- A spec `008-leitura-da-liturgia` usa a branch `feature/liturgy-reading`.

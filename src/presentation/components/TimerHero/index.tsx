@@ -1,7 +1,9 @@
+import { LiturgyLine } from '@components/Liturgy'
 import { formatClock } from '@domain/cycle/format-clock'
 import { phaseLabel } from '@domain/cycle/phase-label'
 import { aveMaria, briefPrayers, gloria, jaculatories, mysterySetFor, paiNosso, quotes } from '@domain/catalogs/content'
 import type { Phase } from '@domain/models/cycle/phase'
+import type { LiturgyDay } from '@domain/models/liturgy/day'
 import type { PomodoroController } from '@main/factories/flows/usePomodoro'
 import { useEffect, useState } from 'react'
 
@@ -11,7 +13,17 @@ const TABS = [
   { id: 'pause', label: 'Pausa' },
 ] as const
 
-export function TimerHero({ pomodoro, onOpenTasks }: { pomodoro: PomodoroController; onOpenTasks: () => void }) {
+export function TimerHero({
+  pomodoro,
+  liturgy,
+  onOpenTasks,
+  onOpenLiturgy,
+}: {
+  pomodoro: PomodoroController
+  liturgy: LiturgyDay | null
+  onOpenTasks: () => void
+  onOpenLiturgy: () => void
+}) {
   const { session, remaining, phaseTotal, stats, settings, tasks, selectedTaskId, quoteIndex, nextQuote, notice, dismissNotice } = pomodoro
   const progress = phaseTotal === 0 ? 0 : Math.min(1, remaining / phaseTotal)
   const radius = 42
@@ -28,6 +40,7 @@ export function TimerHero({ pomodoro, onOpenTasks }: { pomodoro: PomodoroControl
 
   return (
     <section className="hero" id="timer">
+      {liturgy && !isFocus ? <LiturgyLine day={liturgy} onOpen={onOpenLiturgy} /> : null}
       {isFocus ? null : <p className="kicker">Um minuto de oração, vinte e cinco de foco, cinco de pausa.</p>}
       <div className="tabs" role="tablist" aria-label="Fases do ciclo">
         {TABS.map((tab) => {

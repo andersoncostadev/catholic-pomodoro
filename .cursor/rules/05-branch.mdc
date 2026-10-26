@@ -1,0 +1,14 @@
+---
+description: Nome de branch do Pomodoro Católico
+alwaysApply: true
+---
+
+# Branch
+
+O nome é `feature/` mais o efeito em inglês, em minúsculas e com hífen.
+
+## Inviolável
+
+- Sem número da spec, sem português e sem prefixo `fix/`.
+- A spec continua em português: `changes/NNN-descricao/`.
+- Esta mudança: `feature/liturgy-reading`.

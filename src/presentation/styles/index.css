@@ -471,6 +471,116 @@ button:disabled { cursor: default; opacity: 0.55; }
   font-size: clamp(0.92rem, 2.4vw, 1.02rem);
 }
 
+.liturgy-line {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.55rem;
+  max-width: min(36rem, 100%);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(1.15rem, 2.8vw, 1.45rem);
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: center;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--ink) 35%, transparent);
+  text-underline-offset: 0.18rem;
+}
+
+.liturgy-line:hover,
+.liturgy-line:focus-visible {
+  text-decoration-color: var(--ink);
+}
+
+.liturgy-bead {
+  width: 0.72rem;
+  height: 0.72rem;
+  border-radius: 50%;
+  flex: none;
+  display: block;
+  border: 1.5px solid color-mix(in srgb, var(--ink) 55%, transparent);
+}
+
+.liturgy-bead[data-liturgy="branco"] { background: #f7f4ee; }
+.liturgy-bead[data-liturgy="verde"] { background: #2e7d46; }
+.liturgy-bead[data-liturgy="vermelho"] { background: #c0392b; }
+.liturgy-bead[data-liturgy="roxo"] { background: #6b3a86; }
+.liturgy-bead[data-liturgy="rosa"] { background: #e7a0b4; }
+
+.liturgy-color {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0;
+  color: var(--ink);
+}
+
+.liturgy-title {
+  margin: 0;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 1.55rem;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.liturgy-jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.9rem;
+  margin: 0.15rem 0 0;
+}
+
+.liturgy-jump button {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 0.16rem;
+}
+
+.liturgy-reading-title,
+.liturgy-reference {
+  margin: 0;
+  color: var(--muted);
+}
+
+.liturgy-text {
+  margin: 0.35rem 0 0;
+  color: var(--ink);
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
+.liturgy-text sup {
+  font-size: 0.7em;
+  line-height: 0;
+  vertical-align: super;
+}
+
+.liturgy-refrain {
+  margin: 0.45rem 0 0;
+  color: var(--ink);
+  font-style: italic;
+}
+
+.liturgy-source {
+  margin: 0.4rem 0 0;
+  color: var(--faint);
+  font-size: 0.78rem;
+}
+
+.drawer-body.liturgy-body {
+  padding-bottom: calc(100dvh - 6rem);
+}
+
 .tabs {
   display: flex;
   flex-wrap: wrap;
@@ -1287,7 +1397,7 @@ button:disabled { cursor: default; opacity: 0.55; }
 
 @media (max-height: 520px) {
   .hero { gap: 0.35rem; padding-top: 0.15rem; padding-bottom: 0.7rem; }
-  .kicker { display: none; }
+  .kicker, .liturgy-line { display: none; }
   .dial { width: min(30vh, 52vw, 10.5rem); margin-top: 0; }
 }
 
