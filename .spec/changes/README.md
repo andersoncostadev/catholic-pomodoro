@@ -13,7 +13,7 @@ Toda mudança funcional ou visual deve ter uma spec ativa antes da implementaç�
 
 ## Specs ativas
 
-Nenhuma.
+- [012-mais-sobre-o-santo](./012-mais-sobre-o-santo/spec.md) — introdução do artigo e mais fatos de vida e veneração no painel do santo do dia, acrescentados à API sem mudar o contrato atual.
 
 ## Specs arquivadas
 

@@ -73,7 +73,7 @@ O painel rola dentro do drawer, como a liturgia. O texto segue legível na Capel
 - [x] Rodar os scripts sobre o `saints.json` commitado sem trocar nenhum santo de dia, e registrar quantos dias ganharam cada campo
 - [x] Levar os campos novos à entidade, à regra do dia (texto aparado, vazio sai, bloco vazio some) e à resposta do `GET`
 - [x] Testes: `summary` com no máximo 3 parágrafos e 1.200 caracteres, primeiro parágrafo começando pela `biography`, campos novos aparados e omitidos quando vazios, endpoint e arquivo exportado iguais
-- [ ] `dotnet test` e exportação; PR para o `main` da API e Pages publicado com os campos novos
+- [x] `dotnet test` e exportação; PR para o `main` da API e Pages publicado com os campos novos
 
 ### Tasks - Domain
 
@@ -112,7 +112,13 @@ O painel rola dentro do drawer, como a liturgia. O texto segue legível na Capel
 
 ### API
 
-Branch `feature/saint-details` em [saint-calendar-api](https://github.com/andersoncostadev/saint-calendar-api), commit `8a48051`, enviada ao GitHub em 27/10/2026. PR para o `main`: [saint-calendar-api#1](https://github.com/andersoncostadev/saint-calendar-api/pull/1), aberto e ainda sem merge. O Pages só publica os campos novos depois do merge.
+Branch `feature/saint-details` em [saint-calendar-api](https://github.com/andersoncostadev/saint-calendar-api), commit `8a48051`, enviada ao GitHub em 27/10/2026. PR para o `main`: [saint-calendar-api#1](https://github.com/andersoncostadev/saint-calendar-api/pull/1), com merge em 27/10/2026 às 17:41 (commit `9735c2d`).
+
+Depois do merge, o Pages publicou às 17:42 (`Last-Modified: Tue, 27 Oct 2026 20:42:56 GMT`). Em `https://andersoncostadev.github.io/saint-calendar-api/santo-do-dia/{mm}-{dd}`, os três dias responderam 200, com `Access-Control-Allow-Origin: *` e `Content-Type: application/octet-stream`:
+
+- 10/27: `summary` com 1 parágrafo, ordem “Agostinianos”, beatificação “2 de maio de 1778” e atributos “Hábito agostiniano”.
+- 07/31: `summary` com 3 parágrafos, sepultura “Igreja de Jesus”, ordem “Companhia de Jesus”, beatificação “27 de julho de 1609”, canonização “12 de março de 1622”, “Papa Gregório XV” e atributos “Casula, livro”.
+- 02/29: sem `summary`, com ordem “Ordem de São Bento” e veneração só com a festa.
 
 Contrato novo do `GET /santo-do-dia/{mm}-{dd}`, acrescentado ao de [011-api-do-santo](../archive/011-api-do-santo/spec.md). Nenhum campo existente mudou de nome, tipo ou regra.
 
@@ -165,7 +171,7 @@ Em `http://localhost:5174/`, com a pasta exportada servida em `http://localhost:
 - O painel mostrou a foto com “Foto: Vitor Oliveira from Torres Vedras, PORTUGAL · CC BY-SA 2.0”, o título, a introdução (a biografia seguida de mais duas frases), “Vida” com Nascimento, Morte e Ordem religiosa (“Agostinianos”), “Veneração” com Venerado por, Beatificação (“2 de maio de 1778”), Festa, Padroeiro e Na arte (“Hábito agostiniano”), a linha “Calendário” e a fonte do texto e dos fatos. Sepultura, Canonização e Canonizado por não têm texto nesse dia e não apareceram. O corpo do drawer rolou até a fonte.
 - Com o corpo de 07/31 servido no lugar de hoje: três parágrafos, “Vida” com as quatro linhas (Nascimento, Morte, Sepultura, Ordem religiosa) e “Veneração” com Venerado por, Beatificação, Canonização, Canonizado por, Festa e Na arte, nessa ordem.
 - Com o corpo de 29/02: a biografia curta escrita para a API, “Vida” com Nascimento, Morte e Ordem religiosa, “Veneração” só com a festa, sem linha “Calendário” e sem nenhum `dd` vazio.
-- Com o corpo publicado hoje no Pages (sem os campos novos): o painel abriu como antes, com a frase única de biografia, Nascimento e Morte, Venerado por, Festa e Padroeiro.
+- Com o corpo publicado no Pages antes do merge da API (sem os campos novos): o painel abriu como antes, com a frase única de biografia, Nascimento e Morte, Venerado por, Festa e Padroeiro.
 - Na Alvorada, o painel claro mostrou a foto, a legenda, a introdução, as linhas e a fonte legíveis. Com a pintura Santos ao fundo, o crédito “Santos, Bonifacio de’ Pitati. Domínio público · fonte” continuou visível no fim do palco, logo abaixo da dobra, como já acontecia na 011. Accent `gold` e tom `escura` não mudaram.
 - No foco, a linha do santo saiu do DOM; na pausa, voltou.
 - As chaves continuaram `pomodoro-catolico-music`, `pomodoro-catolico-v1` e `pomodoro-catolico-fundo`. Nenhum valor contém nome, introdução nem campo do santo.
