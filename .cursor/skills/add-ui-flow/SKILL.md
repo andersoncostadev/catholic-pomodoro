@@ -11,7 +11,7 @@ A pessoa vê `presentation`. O hook de fluxo mora em `main/factories/flows` e gr
 
 - Página: `src/presentation/flows/`. Hoje só existe o timer. `src/app/App.tsx` só renderiza esse fluxo.
 - Componente: `src/presentation/components/NomeDoBloco/`.
-- Hook de ciclo, fundo, canto ou liturgia: `src/main/factories/flows/`.
+- Hook de ciclo, fundo, canto, liturgia ou santo do dia: `src/main/factories/flows/`.
 - Aparência: `src/presentation/styles/index.css`, acionada por `data-theme`, `data-accent`, `data-tone` e `data-phase` no `.app`.
 
 ## Inviolável

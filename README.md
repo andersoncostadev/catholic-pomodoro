@@ -4,7 +4,18 @@ Página para rezar e trabalhar no mesmo ritmo: um minuto de oração, vinte e ci
 
 A pessoa começa por uma jaculatória, segue para o foco e, na pausa, reza uma dezena do Terço, faz uma oração breve ou permanece em silêncio. Pode nomear a tarefa oferecida e uma intenção do dia, trocar a cena, o fundo, o ambiente e a cor, e ouvir um canto enquanto o ciclo corre.
 
-Tudo o que a pessoa produz fica neste navegador. Não há conta nem sincronização. A página não hospeda API. A única saída de rede é o `GET` da liturgia do dia a `liturgia.cloudhub.ia.br`, e esse texto não é gravado.
+Tudo o que a pessoa produz fica neste navegador. Não há conta nem sincronização. A página não hospeda API. Há duas saídas de rede, ambas `GET`: a liturgia do dia a `liturgia.cloudhub.ia.br` e o santo do dia à API do calendário dos santos. Nenhum dos dois textos é gravado.
+
+## Santo do dia
+
+A API do santo é um projeto ASP.NET Core à parte, fora deste repositório. A página só faz o pedido quando `VITE_SAINT_API_URL` aponta para um host que responde com `access-control-allow-origin`. Sem a variável, não há pedido, não há linha e não há painel do santo.
+
+```bash
+# .env.development.local, fora do git
+VITE_SAINT_API_URL=http://localhost:5080
+```
+
+Na hospedagem estática, a variável entra no ambiente do build com a URL publicada da API.
 
 ## Ciclo
 
@@ -50,7 +61,7 @@ React 19, Vite e TypeScript. O estilo está em `src/presentation/styles/index.cs
 src/
   domain/          ciclo, catálogos e contratos
   data/            carga e gravação via IStorage
-  infra/           localStorage, sino, notificação e o GET da liturgia
+  infra/           localStorage, sino, notificação e os GET da liturgia e do santo
   main/factories/  único lugar que instancia storage e caso de uso
   presentation/    timer, painéis, método e canto
   app/             casca da página

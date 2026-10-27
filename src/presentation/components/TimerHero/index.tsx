@@ -1,9 +1,11 @@
 import { LiturgyLine } from '@components/Liturgy'
+import { SaintDayLine } from '@components/SaintDay'
 import { formatClock } from '@domain/cycle/format-clock'
 import { phaseLabel } from '@domain/cycle/phase-label'
 import { aveMaria, briefPrayers, gloria, jaculatories, mysterySetFor, paiNosso, quotes } from '@domain/catalogs/content'
 import type { Phase } from '@domain/models/cycle/phase'
 import type { LiturgyDay } from '@domain/models/liturgy/day'
+import type { SaintDay } from '@domain/models/saint-day/day'
 import type { PomodoroController } from '@main/factories/flows/usePomodoro'
 import { useEffect, useRef, useState } from 'react'
 
@@ -16,13 +18,17 @@ const TABS = [
 export function TimerHero({
   pomodoro,
   liturgy,
+  saint,
   onOpenTasks,
   onOpenLiturgy,
+  onOpenSaint,
 }: {
   pomodoro: PomodoroController
   liturgy: LiturgyDay | null
+  saint: SaintDay | null
   onOpenTasks: () => void
   onOpenLiturgy: () => void
+  onOpenSaint: () => void
 }) {
   const { session, remaining, phaseTotal, stats, settings, tasks, selectedTaskId, quoteIndex, nextQuote, notice, dismissNotice } = pomodoro
   const progress = phaseTotal === 0 ? 0 : Math.min(1, remaining / phaseTotal)
@@ -48,6 +54,7 @@ export function TimerHero({
   return (
     <section className="hero" id="timer">
       {liturgy && !isFocus ? <LiturgyLine day={liturgy} onOpen={onOpenLiturgy} /> : null}
+      {saint && !isFocus ? <SaintDayLine saint={saint} onOpen={onOpenSaint} /> : null}
       <div className="tabs" role="tablist" aria-label="Fases do ciclo">
         {TABS.map((tab) => {
           const selected = tab.id === 'pause' ? session.phase === 'pause' || session.phase === 'longPause' : session.phase === tab.id

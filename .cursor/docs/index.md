@@ -1,6 +1,6 @@
 # Cursor index — Pomodoro Católico
 
-Fluxo: **presentation → factory → caso de uso → protocolo → adaptador**. A página não hospeda API. A única saída de rede é o `GET` da liturgia.
+Fluxo: **presentation → factory → caso de uso → protocolo → adaptador**. A página não hospeda API. As saídas de rede são o `GET` da liturgia e o `GET` do santo do dia.
 
 | Camada | Pasta | Guardrail |
 |---|---|---|

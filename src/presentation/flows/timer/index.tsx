@@ -8,13 +8,15 @@ import type { Phase } from '@domain/models/cycle/phase'
 import { useBackdrop } from '@main/factories/flows/useBackdrop'
 import { useLiturgy } from '@main/factories/flows/useLiturgy'
 import { usePomodoro } from '@main/factories/flows/usePomodoro'
+import { useSaintDay } from '@main/factories/flows/useSaintDay'
 
-type Panel = 'tasks' | 'settings' | 'streak' | 'liturgy' | null
+type Panel = 'tasks' | 'settings' | 'streak' | 'liturgy' | 'saint' | null
 
 export function TimerFlow() {
   const pomodoro = usePomodoro()
   const backdrop = useBackdrop()
   const liturgy = useLiturgy()
+  const saint = useSaintDay()
   const [panel, setPanel] = useState<Panel>(null)
   const days = pomodoro.stats.streak
   const stayPhaseRef = useRef(pomodoro.stayPhase)
@@ -29,7 +31,8 @@ export function TimerFlow() {
 
   useEffect(() => {
     if (panel === 'liturgy' && liturgy == null) setPanel(null)
-  }, [panel, liturgy])
+    if (panel === 'saint' && saint == null) setPanel(null)
+  }, [panel, liturgy, saint])
 
   useEffect(() => {
     if (!panel && !pomodoro.leavePhase) return
@@ -111,8 +114,10 @@ export function TimerFlow() {
             <TimerHero
               pomodoro={pomodoro}
               liturgy={liturgy}
+              saint={saint}
               onOpenTasks={() => setPanel('tasks')}
               onOpenLiturgy={() => setPanel('liturgy')}
+              onOpenSaint={() => setPanel('saint')}
             />
           </main>
         </div>
@@ -131,7 +136,14 @@ export function TimerFlow() {
       </div>
       <Story onBegin={begin} />
       {panel ? (
-        <Panels panel={panel} onClose={() => setPanel(null)} pomodoro={pomodoro} backdrop={backdrop} liturgy={liturgy} />
+        <Panels
+          panel={panel}
+          onClose={() => setPanel(null)}
+          pomodoro={pomodoro}
+          backdrop={backdrop}
+          liturgy={liturgy}
+          saint={saint}
+        />
       ) : null}
     </div>
   )
