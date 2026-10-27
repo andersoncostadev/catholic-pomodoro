@@ -13,7 +13,7 @@ Página única para rezar e trabalhar no mesmo ritmo: um minuto de oração, vin
 - Abre Ajustes para mudar os tempos, o tipo de pausa, a cena, o fundo, o ambiente (Capela, Alvorada, Noite) e a cor do anel e do botão.
 - Ouve um canto enquanto o ciclo corre. Ao entrar na oração, o canto que estiver tocando pausa e não volta sozinho; a faixa escolhida permanece, e a pessoa pode tocá-la de novo.
 - Lê, abaixo do timer, o método, o sentido e as perguntas frequentes.
-- Na oração e na pausa, vê a celebração do dia e pode abrir a liturgia. Debaixo dela, quando a API do santo responde, vê o santo do dia e pode abrir a biografia curta, a foto, a vida (nascimento e morte), a veneração (venerado por, canonização, festa e padroeiro) e a fonte.
+- Na oração e na pausa, vê a celebração do dia e pode abrir a liturgia. Debaixo dela, quando a API do santo responde, vê o santo do dia e pode abrir a foto, a introdução do artigo em até três parágrafos (ou a biografia curta, quando o dia não tem introdução), a vida (nascimento, morte, sepultura e ordem religiosa), a veneração (venerado por, beatificação, canonização, quem canonizou, festa, padroeiro e os símbolos na arte) e a fonte. O painel só mostra as linhas que têm texto e rola dentro do drawer. A linha do hero continua só com o nome.
 
 ## Ciclo
 

@@ -15,6 +15,7 @@ export function SaintDayPanel({ saint }: { saint: SaintDay }) {
   const image = saint.image && saint.image !== brokenImage ? saint.image : null
   const credit = saint.imageCredit
   const sources = [saint.source, saint.factsSource].filter((source): source is SaintDaySource => source !== null)
+  const introduction = saint.summary ?? [saint.biography]
 
   return (
     <div className="drawer-body saint-body">
@@ -35,21 +36,32 @@ export function SaintDayPanel({ saint }: { saint: SaintDay }) {
         </figure>
       ) : null}
       <p className="liturgy-title">{saint.title}</p>
-      <p className="liturgy-text">{saint.biography}</p>
+      <div className="saint-intro">
+        {introduction.map((paragraph, index) => (
+          <p key={index} className="liturgy-text">
+            {paragraph}
+          </p>
+        ))}
+      </div>
       <Facts
         title="Vida"
         rows={[
           ['Nascimento', saint.life?.birth],
           ['Morte', saint.life?.death],
+          ['Sepultura', saint.life?.burial],
+          ['Ordem religiosa', saint.life?.order],
         ]}
       />
       <Facts
         title="Veneração"
         rows={[
           ['Venerado por', saint.veneration?.veneratedBy],
+          ['Beatificação', saint.veneration?.beatification],
           ['Canonização', saint.veneration?.canonization],
+          ['Canonizado por', saint.veneration?.canonizedBy],
           ['Festa', saint.veneration?.feast],
           ['Padroeiro', saint.veneration?.patronOf],
+          ['Na arte', saint.veneration?.attributes],
         ]}
       />
       {saint.calendar ? (

@@ -19,6 +19,7 @@ export function readSaintDay(body: unknown): SaintDay | null {
   return {
     title,
     biography,
+    summary: readSummary(body.summary),
     image,
     source: readSource(body.source),
     imageCredit: image ? readImageCredit(body.imageCredit) : null,
@@ -35,20 +36,33 @@ function readCalendar(value: unknown): SaintDayCalendar | null {
   return name ? { name, url: httpsUrl(value.url) } : null
 }
 
+function readSummary(value: unknown): string[] | null {
+  if (!Array.isArray(value)) return null
+  const paragraphs = value.map(text).filter(Boolean)
+  return paragraphs.length > 0 ? paragraphs : null
+}
+
 function readLife(value: unknown): SaintDayLife | null {
   if (!isRecord(value)) return null
-  const birth = text(value.birth) || null
-  const death = text(value.death) || null
-  return birth || death ? { birth, death } : null
+  const life = {
+    birth: text(value.birth) || null,
+    death: text(value.death) || null,
+    burial: text(value.burial) || null,
+    order: text(value.order) || null,
+  }
+  return Object.values(life).some(Boolean) ? life : null
 }
 
 function readVeneration(value: unknown): SaintDayVeneration | null {
   if (!isRecord(value)) return null
   const veneration = {
     veneratedBy: text(value.veneratedBy) || null,
+    beatification: text(value.beatification) || null,
     canonization: text(value.canonization) || null,
+    canonizedBy: text(value.canonizedBy) || null,
     feast: text(value.feast) || null,
     patronOf: text(value.patronOf) || null,
+    attributes: text(value.attributes) || null,
   }
   return Object.values(veneration).some(Boolean) ? veneration : null
 }
