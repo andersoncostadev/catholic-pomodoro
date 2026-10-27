@@ -18,17 +18,17 @@ Branch desta mudança, quando a execução começar: `feature/saint-calendar-api
 
 ## Referências de Projeto
 
-- [Produto](../../memory/produto.md)
-- [Contexto técnico global](../../memory/contexto-tecnico.md)
-- [Estrutura do projeto](../../memory/estrutura.md)
+- [Produto](../../../memory/produto.md)
+- [Contexto técnico global](../../../memory/contexto-tecnico.md)
+- [Estrutura do projeto](../../../memory/estrutura.md)
 
 ## Referências Compartilhadas
 
-- [Como executar](../../shared/como-executar.md)
-- [Regras de nomenclatura](../../shared/regras-de-nomenclatura.md)
-- Modelo de origem: [modelo-base](../../templates/modelo-base.md)
+- [Como executar](../../../shared/como-executar.md)
+- [Regras de nomenclatura](../../../shared/regras-de-nomenclatura.md)
+- Modelo de origem: [modelo-base](../../../templates/modelo-base.md)
 - Tentativa anterior, parada: [010-santo-do-dia](../010-santo-do-dia/spec.md)
-- Leitura de rede já existente: [007-liturgia-do-dia](../archive/007-liturgia-do-dia/spec.md)
+- Leitura de rede já existente: [007-liturgia-do-dia](../007-liturgia-do-dia/spec.md)
 
 ## Observações Locais
 
@@ -205,6 +205,12 @@ Com `Origin: https://catholic-pomodoro.pages.dev`, `curl.exe -i`:
 
 O `VITE_SAINT_API_URL` de produção passa a ser `https://andersoncostadev.github.io/saint-calendar-api`, no ambiente de build do projeto `catholic-pomodoro` na Cloudflare.
 
+### Produção
+
+A variável foi criada como texto em **Production** no projeto `catholic-pomodoro` da Cloudflare antes do merge do [PR #2](https://github.com/andersoncostadev/catholic-pomodoro/pull/2) (`2f4ce52`). O build seguinte publicou `assets/index-v1NgBZus.js`, que contém o endereço da API.
+
+Em `https://catholic-pomodoro.pages.dev/`, na oração, a página pediu `https://liturgia.cloudhub.ia.br/v1/liturgia?dia=27&mes=10&ano=2026` e `https://andersoncostadev.github.io/saint-calendar-api/santo-do-dia/10-27`, e mostrou “Santo do dia: São Gonçalo de Lagos” debaixo de “3ª feira da 30ª Semana do Tempo Comum”.
+
 ## Encerramento
 
-Esta spec termina apenas quando todos os itens estiverem marcados e com evidência registrada, no formato definido em [Como executar](../../shared/como-executar.md).
+Esta spec termina apenas quando todos os itens estiverem marcados e com evidência registrada, no formato definido em [Como executar](../../../shared/como-executar.md).
