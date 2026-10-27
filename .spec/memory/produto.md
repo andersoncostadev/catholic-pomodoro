@@ -13,7 +13,7 @@ Página única para rezar e trabalhar no mesmo ritmo: um minuto de oração, vin
 - Abre Ajustes para mudar os tempos, o tipo de pausa, a cena, o fundo, o ambiente (Capela, Alvorada, Noite) e a cor do anel e do botão.
 - Ouve um canto enquanto o ciclo corre. Ao entrar na oração, o canto que estiver tocando pausa e não volta sozinho; a faixa escolhida permanece, e a pessoa pode tocá-la de novo.
 - Lê, abaixo do timer, o método, o sentido e as perguntas frequentes.
-- Na oração e na pausa, vê a celebração do dia e pode abrir a liturgia.
+- Na oração e na pausa, vê a celebração do dia e pode abrir a liturgia. Debaixo dela, quando a API do santo responde, vê o santo do dia e pode abrir a biografia curta, a foto, a vida (nascimento e morte), a veneração (venerado por, canonização, festa e padroeiro) e a fonte.
 
 ## Ciclo
 
@@ -31,4 +31,4 @@ Os quatro mistérios do dia (gozosos, dolorosos, gloriosos, luminosos) seguem o 
 - Sessão, tarefas, intenção, estatísticas e ajustes, na chave `pomodoro-catolico-v1`.
 - Fundo escolhido, na chave `pomodoro-catolico-fundo`.
 
-Não há conta nem sincronização. A página não hospeda API. A única saída de rede é o `GET` da liturgia do dia a `liturgia.cloudhub.ia.br`, e esse texto não é gravado.
+Não há conta nem sincronização. A página não hospeda API. Há dois `GET`: a liturgia do dia a `liturgia.cloudhub.ia.br` e o santo do dia à API do calendário dos santos. Nenhum dos dois textos é gravado.

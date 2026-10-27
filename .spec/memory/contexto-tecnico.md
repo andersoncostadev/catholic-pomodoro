@@ -15,14 +15,14 @@
 main.tsx
   -> app/App.tsx
        -> presentation/flows/timer
-            -> main/factories/flows (usePomodoro, useBackdrop, useChant, useLiturgy)
+            -> main/factories/flows (usePomodoro, useBackdrop, useChant, useLiturgy, useSaintDay)
                  -> main/factories/usecases (makeLoad*, makeSave*)
                       -> data/usecases
                            -> data/protocols/cache (IStorage)
                                 -> infra/cache/local-storage-adapter
-                           -> data/protocols/http (corpo da liturgia ou null)
-                                -> infra/http (GET da liturgia)
-                 -> domain/cycle, domain/liturgy e domain/catalogs
+                           -> data/protocols/http (corpo da liturgia ou do santo, ou null)
+                                -> infra/http (GET da liturgia e GET do santo)
+                 -> domain/cycle, domain/liturgy, domain/saint-day e domain/catalogs
                  -> infra/browser (sino e notificação), só dentro da factory
 ```
 
@@ -45,7 +45,7 @@ Import novo usa o alias, sem sufixo `.ts`.
 
 ## Decisões já tomadas
 
-- Uma página. A barra abre painéis; não há rotas. Não há Next, App Router, Axios, MSAL, cookie nem login. A página não hospeda API. A única saída de rede é `GET https://liturgia.cloudhub.ia.br/v1/liturgia`, com `dia`, `mes` e `ano`. O texto não entra no `localStorage`.
+- Uma página. A barra abre painéis; não há rotas. Não há Next, App Router, Axios, MSAL, cookie nem login. A página não hospeda API. Há dois `GET`: `https://liturgia.cloudhub.ia.br/v1/liturgia`, com `dia`, `mes` e `ano`, e `{VITE_SAINT_API_URL}/santo-do-dia/{mm}-{dd}`, na API ASP.NET Core do calendário dos santos, que vive fora deste repositório. Sem `VITE_SAINT_API_URL`, o adaptador do santo não faz pedido. Nenhum dos textos entra no `localStorage`.
 - O ciclo padrão é 1 · 25 · 5, com pausa longa de 15 minutos a cada quatro focos.
 - A pausa pode ser dezena, oração breve ou presença.
 - Ambientes: `capela` (escuro quente), `alvorada` (claro) e `noite` (azul escuro).
@@ -58,7 +58,7 @@ Import novo usa o alias, sem sufixo `.ts`.
 
 ## Restrições
 
-- Não introduzir backend, conta, login nem gravação fora do `localStorage`. A página não hospeda API. A única saída de rede é o `GET` da liturgia, e esse texto não é gravado.
+- Não introduzir backend, conta, login nem gravação fora do `localStorage`. A página não hospeda API. As saídas de rede são o `GET` da liturgia e o `GET` do santo do dia, e nenhum dos textos é gravado.
 - Não quebrar a leitura das chaves `pomodoro-catolico-v1`, `pomodoro-catolico-fundo` e `pomodoro-catolico-music`. Campo novo entra com valor padrão quando o JSON antigo não o tem.
 - Não mudar duração, sequência ou avanço de fase dentro de um componente.
 - Não aplicar um véu ou uma cor que deixe texto ou botão ilegível num fundo ou ambiente que o app já oferece.
@@ -73,6 +73,7 @@ Import novo usa o alias, sem sufixo `.ts`.
 | Scripts | `package.json` (`dev`, `build`, `preview`) |
 | Porta do dev server | `vite.config.ts` (`5174`, `strictPort`) |
 | Aliases | `tsconfig.app.json` e `vite.config.ts` |
+| URL da API do santo | `VITE_SAINT_API_URL`, no ambiente do build ou em `.env.development.local` |
 | Tipos | `tsconfig.json`, `tsconfig.app.json`, `tsconfig.node.json` |
 
 ## Comandos de gate

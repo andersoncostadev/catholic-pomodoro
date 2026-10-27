@@ -29,7 +29,7 @@ Esta pasta define o que fazer (planejamento, rastreabilidade e evidência) para 
 
 ## Observações do projeto
 
-- O app é uma página só. Não hospeda API, banco, conta nem servidor. A única saída de rede é o `GET` da liturgia do dia a `liturgia.cloudhub.ia.br`, e esse texto não é gravado.
+- O app é uma página só. Não hospeda API, banco, conta nem servidor. Há dois `GET`: a liturgia do dia a `liturgia.cloudhub.ia.br` e o santo do dia à API do calendário dos santos, que vive fora deste repositório. Nenhum dos dois textos é gravado.
 - Duração, sequência e avanço de fase vivem em `src/domain/cycle`. A tela chama factory em `src/main/factories` e só apresenta o que esse estado já decidiu.
 - Fundo (`src/domain/catalogs/saints.ts`) e aparência (`theme`, `accent` em `Settings`) são escolhas independentes. Uma mudança visual precisa continuar legível nas combinações que o app já oferece.
 - Tudo que o usuário produz (tarefas, tempos, sequência, fundo, canto, ajustes) fica no `localStorage` deste navegador.

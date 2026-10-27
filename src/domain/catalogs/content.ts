@@ -229,6 +229,6 @@ export const faqs = [
   },
   {
     q: 'Preciso de conta?',
-    a: 'Não. Tarefas, sequência, tempos e a frase ficam neste navegador. A liturgia do dia é pedida a liturgia.cloudhub.ia.br e não é gravada.',
+    a: 'Não. Tarefas, sequência, tempos e a frase ficam neste navegador. A liturgia do dia é pedida a liturgia.cloudhub.ia.br, o santo do dia é pedido à API do calendário dos santos, e nenhum dos dois é gravado.',
   },
 ]

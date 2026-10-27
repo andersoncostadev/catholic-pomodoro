@@ -13,7 +13,7 @@ Toda mudança funcional ou visual deve ter uma spec ativa antes da implementaç�
 
 ## Specs ativas
 
-Nenhuma.
+- [010-santo-do-dia](./010-santo-do-dia/spec.md) — santo do dia no hero e num painel, no mesmo desenho da liturgia. O pedido espera o cabeçalho de CORS da origem.
 
 ## Specs arquivadas
 

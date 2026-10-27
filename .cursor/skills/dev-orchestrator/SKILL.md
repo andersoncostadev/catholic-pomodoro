@@ -30,7 +30,7 @@ Não desenhe a interface de um catálogo ou de um campo que ainda não existe.
 
 - Chaves já existentes: `pomodoro-catolico-v1`, `pomodoro-catolico-fundo` e `pomodoro-catolico-music`.
 - Não crie chave nova no `localStorage`, salvo a spec pedir.
-- A liturgia do dia não tem chave. O único pedido de rede é o `GET` em `infra/http`, e o texto não é gravado.
+- A liturgia e o santo do dia não têm chave. Os pedidos de rede são os dois `GET` em `infra/http`, e os textos não são gravados.
 - JSON antigo sem um campo novo abre com o valor padrão. Não apague ciclo, tarefas, sequência, ajustes, fundo nem canto.
 - Duração, sequência e avanço de fase ficam em `domain/cycle`. O componente não recalcula isso.
 - A tela chama factory. Só a factory instancia adaptador e caso de uso.

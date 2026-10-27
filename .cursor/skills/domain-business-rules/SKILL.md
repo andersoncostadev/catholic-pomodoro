@@ -15,7 +15,7 @@ A regra mora em `src/domain`. Sem React e sem `localStorage`.
 - Canto: `src/domain/models/chant/` e `src/domain/catalogs/chants.ts`.
 - Jaculatória, oração, mistério, citação e pergunta: `src/domain/catalogs/content.ts`.
 - Contrato novo de leitura ou gravação: `src/domain/usecases/`, arquivo kebab-case, interface `I...`, método `handle`.
-- Leitura do JSON da liturgia: função pura em `src/domain/liturgy/`. Sem `fetch`.
+- Leitura do JSON da liturgia: função pura em `src/domain/liturgy/`. Do santo: `src/domain/saint-day/`. Sem `fetch`.
 
 ## Inviolável
 

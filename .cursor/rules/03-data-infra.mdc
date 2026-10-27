@@ -6,13 +6,14 @@ alwaysApply: false
 
 # Data e infra
 
-O caso de uso em `src/data/usecases` implementa o contrato de `domain/usecases`. Carga e gravação falam só com `IStorage`. A liturgia fala com o protocolo de origem e não grava. `src/infra` é o adaptador concreto.
+O caso de uso em `src/data/usecases` implementa o contrato de `domain/usecases`. Carga e gravação falam só com `IStorage`. A liturgia e o santo do dia falam com o protocolo de origem e não gravam. `src/infra` é o adaptador concreto.
 
 ## Inviolável
 
 - `data` não chama `localStorage` nem `fetch`, e não importa `infra` nem React.
 - `localStorage` só em `infra/cache/local-storage-adapter.ts`.
-- O `GET` da liturgia só em `infra/http`. Tempo limite de 8 segundos. Falha vira `null`, sem gravar o corpo e sem chave nova.
+- O `GET` da liturgia e o `GET` do santo só em `infra/http`. Tempo limite de 8 segundos. Falha vira `null`, sem gravar o corpo e sem chave nova.
+- O adaptador do santo lê a URL de `VITE_SAINT_API_URL`. Sem a variável, devolve `null` sem `fetch`.
 - Sino e notificação só em `infra/browser`. Frequência, duração do sino e o título `Pomodoro Católico` não mudam sem a spec pedir.
 - `get` e `set` de `IStorage` engolem falha de storage.
 - Remapeamento de id antigo de fundo fica no caso de uso de backdrop, usando o catálogo.

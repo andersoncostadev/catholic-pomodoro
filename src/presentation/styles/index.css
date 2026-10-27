@@ -498,6 +498,17 @@ button:disabled { cursor: default; opacity: 0.55; }
   text-decoration-color: var(--ink);
 }
 
+.saint-line {
+  font-size: clamp(1rem, 2.4vw, 1.2rem);
+  font-weight: 500;
+  column-gap: 0.3rem;
+}
+
+.saint-label {
+  font-weight: 400;
+  opacity: 0.8;
+}
+
 .liturgy-bead {
   width: 0.72rem;
   height: 0.72rem;
@@ -575,6 +586,56 @@ button:disabled { cursor: default; opacity: 0.55; }
   margin: 0.4rem 0 0;
   color: var(--faint);
   font-size: 0.78rem;
+}
+
+.saint-portrait {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+}
+
+.saint-portrait img {
+  display: block;
+  width: 100%;
+  max-height: min(24rem, 45vh);
+  object-fit: contain;
+  border-radius: 0.6rem;
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+}
+
+.saint-portrait figcaption,
+.saint-body .liturgy-source {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.saint-facts {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+}
+
+.saint-facts div {
+  display: grid;
+  grid-template-columns: 7rem 1fr;
+  gap: 0.75rem;
+}
+
+.saint-facts dt {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.saint-facts dd {
+  margin: 0;
+  color: var(--ink);
+  line-height: 1.45;
+}
+
+.saint-body a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.14rem;
 }
 
 .tabs {
@@ -917,6 +978,10 @@ button:disabled { cursor: default; opacity: 0.55; }
 
 .app:not([data-phase="focus"]) .liturgy-line {
   font-size: clamp(1rem, 2.4vw, 1.2rem);
+}
+
+.app:not([data-phase="focus"]) .saint-line {
+  font-size: clamp(0.92rem, 2.1vw, 1.05rem);
 }
 
 .app:not([data-phase="focus"]) .down {
