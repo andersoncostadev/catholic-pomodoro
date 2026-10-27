@@ -40,3 +40,4 @@
 - A spec `009-ciclo-na-primeira-tela` usa a branch `feature/clearer-cycle`.
 - A spec `010-santo-do-dia` usa a branch `feature/saint-of-the-day`.
 - A spec `011-api-do-santo` usa a branch `feature/saint-calendar-api`.
+- A spec `012-mais-sobre-o-santo` usa a branch `feature/saint-details`.
