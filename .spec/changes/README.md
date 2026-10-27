@@ -13,7 +13,7 @@ Toda mudança funcional ou visual deve ter uma spec ativa antes da implementaç�
 
 ## Specs ativas
 
-- [012-mais-sobre-o-santo](./012-mais-sobre-o-santo/spec.md) — introdução do artigo e mais fatos de vida e veneração no painel do santo do dia, acrescentados à API sem mudar o contrato atual.
+Nenhuma.
 
 ## Specs arquivadas
 
@@ -28,3 +28,4 @@ Toda mudança funcional ou visual deve ter uma spec ativa antes da implementaç�
 - [009-ciclo-na-primeira-tela](./archive/009-ciclo-na-primeira-tela/spec.md) — oração e pausa na primeira tela, oferecimento que fecha o painel, e ajustes do ritmo sem descartar um tempo em curso. Concluída em 2026-10-26.
 - [010-santo-do-dia](./archive/010-santo-do-dia/spec.md) — santo do dia lido da API da Canção Nova; parada porque a origem não trouxe o cabeçalho de CORS. Substituída pela 011 em 2026-10-27.
 - [011-api-do-santo](./archive/011-api-do-santo/spec.md) — santo do dia no hero e num painel, lido de uma API própria do calendário dos santos, publicada no GitHub Pages. Concluída em 2026-10-27.
+- [012-mais-sobre-o-santo](./archive/012-mais-sobre-o-santo/spec.md) — introdução do artigo e mais fatos de vida e veneração no painel do santo do dia, acrescentados à API sem mudar o contrato atual. Concluída em 2026-10-27.
