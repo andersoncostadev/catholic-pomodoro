@@ -22,16 +22,16 @@ Branch desta mudança: `feature/saint-of-the-day`.
 
 ## Referências de Projeto
 
-- [Produto](../../memory/produto.md)
-- [Contexto técnico global](../../memory/contexto-tecnico.md)
-- [Estrutura do projeto](../../memory/estrutura.md)
+- [Produto](../../../memory/produto.md)
+- [Contexto técnico global](../../../memory/contexto-tecnico.md)
+- [Estrutura do projeto](../../../memory/estrutura.md)
 
 ## Referências Compartilhadas
 
-- [Como executar](../../shared/como-executar.md)
-- [Regras de nomenclatura](../../shared/regras-de-nomenclatura.md)
-- Modelo de origem: [modelo-base](../../templates/modelo-base.md)
-- Leitura de rede já existente: [007-liturgia-do-dia](../archive/007-liturgia-do-dia/spec.md)
+- [Como executar](../../../shared/como-executar.md)
+- [Regras de nomenclatura](../../../shared/regras-de-nomenclatura.md)
+- Modelo de origem: [modelo-base](../../../templates/modelo-base.md)
+- Leitura de rede já existente: [007-liturgia-do-dia](../007-liturgia-do-dia/spec.md)
 
 ## Observações Locais
 
@@ -116,4 +116,6 @@ O corpo, lido fora do navegador, tinha `today.title` “São Gonçalo de Lagos, 
 
 ## Encerramento
 
-Esta spec termina apenas quando todos os itens estiverem marcados e com evidência registrada, no formato definido em [Como executar](../../shared/como-executar.md).
+Arquivada em 27/10/2026 sem execução, substituída pela [011-api-do-santo](../011-api-do-santo/spec.md). A origem `api-liturgia-diaria.vercel.app` nunca trouxe `access-control-allow-origin`, e o santo do dia passou a vir da API própria do calendário dos santos. As tasks abertas acima não foram feitas por esta spec; o que a página entregou está na 011.
+
+Esta spec termina apenas quando todos os itens estiverem marcados e com evidência registrada, no formato definido em [Como executar](../../../shared/como-executar.md).

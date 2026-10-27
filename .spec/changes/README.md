@@ -13,7 +13,7 @@ Toda mudança funcional ou visual deve ter uma spec ativa antes da implementaç�
 
 ## Specs ativas
 
-- [010-santo-do-dia](./010-santo-do-dia/spec.md) — santo do dia no hero e num painel, no mesmo desenho da liturgia. O pedido espera o cabeçalho de CORS da origem.
+Nenhuma.
 
 ## Specs arquivadas
 
@@ -26,3 +26,5 @@ Toda mudança funcional ou visual deve ter uma spec ativa antes da implementaç�
 - [007-liturgia-do-dia](./archive/007-liturgia-do-dia/spec.md) — celebração do dia no hero e liturgia num painel, pedida a um serviço público, com o ciclo seguindo se a rede falhar. Concluída em 2026-10-26.
 - [008-leitura-da-liturgia](./archive/008-leitura-da-liturgia/spec.md) — versículo separado da palavra, refrão antes do salmo, atalho para coleta, salmo e evangelho, e a linha do hero reconhecível como botão. Concluída em 2026-10-26.
 - [009-ciclo-na-primeira-tela](./archive/009-ciclo-na-primeira-tela/spec.md) — oração e pausa na primeira tela, oferecimento que fecha o painel, e ajustes do ritmo sem descartar um tempo em curso. Concluída em 2026-10-26.
+- [010-santo-do-dia](./archive/010-santo-do-dia/spec.md) — santo do dia lido da API da Canção Nova; parada porque a origem não trouxe o cabeçalho de CORS. Substituída pela 011 em 2026-10-27.
+- [011-api-do-santo](./archive/011-api-do-santo/spec.md) — santo do dia no hero e num painel, lido de uma API própria do calendário dos santos, publicada no GitHub Pages. Concluída em 2026-10-27.
