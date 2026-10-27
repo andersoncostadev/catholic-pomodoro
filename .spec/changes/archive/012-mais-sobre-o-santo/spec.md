@@ -16,16 +16,16 @@ Branch desta mudança, nos dois repositórios: `feature/saint-details`. A API en
 
 ## Referências de Projeto
 
-- [Produto](../../memory/produto.md)
-- [Contexto técnico global](../../memory/contexto-tecnico.md)
-- [Estrutura do projeto](../../memory/estrutura.md)
+- [Produto](../../../memory/produto.md)
+- [Contexto técnico global](../../../memory/contexto-tecnico.md)
+- [Estrutura do projeto](../../../memory/estrutura.md)
 
 ## Referências Compartilhadas
 
-- [Como executar](../../shared/como-executar.md)
-- [Regras de nomenclatura](../../shared/regras-de-nomenclatura.md)
-- Modelo de origem: [modelo-base](../../templates/modelo-base.md)
-- Contrato atual da API: [011-api-do-santo](../archive/011-api-do-santo/spec.md)
+- [Como executar](../../../shared/como-executar.md)
+- [Regras de nomenclatura](../../../shared/regras-de-nomenclatura.md)
+- Modelo de origem: [modelo-base](../../../templates/modelo-base.md)
+- Contrato atual da API: [011-api-do-santo](../011-api-do-santo/spec.md)
 
 ## Observações Locais
 
@@ -120,7 +120,7 @@ Depois do merge, o Pages publicou às 17:42 (`Last-Modified: Tue, 27 Oct 2026 20
 - 07/31: `summary` com 3 parágrafos, sepultura “Igreja de Jesus”, ordem “Companhia de Jesus”, beatificação “27 de julho de 1609”, canonização “12 de março de 1622”, “Papa Gregório XV” e atributos “Casula, livro”.
 - 02/29: sem `summary`, com ordem “Ordem de São Bento” e veneração só com a festa.
 
-Contrato novo do `GET /santo-do-dia/{mm}-{dd}`, acrescentado ao de [011-api-do-santo](../archive/011-api-do-santo/spec.md). Nenhum campo existente mudou de nome, tipo ou regra.
+Contrato novo do `GET /santo-do-dia/{mm}-{dd}`, acrescentado ao de [011-api-do-santo](../011-api-do-santo/spec.md). Nenhum campo existente mudou de nome, tipo ou regra.
 
 | Campo | Regra |
 | --- | --- |
@@ -178,6 +178,17 @@ Em `http://localhost:5174/`, com a pasta exportada servida em `http://localhost:
 
 Depois da verificação, o arquivo servido de 10/27 voltou a ser o exportado, e o navegador voltou à pausa, Capela, Última Ceia e dourado.
 
+### Produção
+
+A página foi para o `main` pelos PRs [#4](https://github.com/andersoncostadev/catholic-pomodoro/pull/4) (`948f144`, código, `produto` e a spec) e [#5](https://github.com/andersoncostadev/catholic-pomodoro/pull/5) (`8ec212b`, evidência do Pages, branch e spec ativa), depois do merge da API. A Cloudflare publicou `assets/index-Bq6mlWC9.js` e `assets/index-DRmWhdPV.css`, que contêm o painel novo; o CSS tem o mesmo hash do build local.
+
+Em `https://catholic-pomodoro.pages.dev/`, em 27/10/2026, na pausa, a página pediu só `https://liturgia.cloudhub.ia.br/v1/liturgia?dia=27&mes=10&ano=2026` e `https://andersoncostadev.github.io/saint-calendar-api/santo-do-dia/10-27`. A linha do hero mostrou “Santo do dia: São Gonçalo de Lagos”, só com o nome. O painel mostrou a introdução de 351 caracteres e, sem nenhum `dd` vazio:
+
+- Vida: Nascimento “1360, Lagos”, Morte “15 de outubro de 1422, Torres Vedras”, Ordem religiosa “Agostinianos”.
+- Veneração: Venerado por “Igreja Católica”, Beatificação “2 de maio de 1778”, Festa “27 de outubro”, Padroeiro “Torres Vedras, Lagos, pescadores do Algarve”, Na arte “Hábito agostiniano”.
+
+As chaves continuaram `pomodoro-catolico-music`, `pomodoro-catolico-v1` e `pomodoro-catolico-fundo`, sem texto do santo.
+
 ## Encerramento
 
-Esta spec termina apenas quando todos os itens estiverem marcados e com evidência registrada, no formato definido em [Como executar](../../shared/como-executar.md).
+Esta spec termina apenas quando todos os itens estiverem marcados e com evidência registrada, no formato definido em [Como executar](../../../shared/como-executar.md).
