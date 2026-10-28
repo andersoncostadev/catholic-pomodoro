@@ -64,11 +64,6 @@ export function SaintDayPanel({ saint }: { saint: SaintDay }) {
           ['Na arte', saint.veneration?.attributes],
         ]}
       />
-      {saint.calendar ? (
-        <p className="liturgy-source">
-          Calendário: <Link href={saint.calendar.url}>{saint.calendar.name}</Link>
-        </p>
-      ) : null}
       {sources.length > 0 ? (
         <p className="liturgy-source">
           Fonte:{' '}
