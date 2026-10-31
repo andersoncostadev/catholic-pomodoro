@@ -3,4 +3,6 @@ export type Task = {
   title: string
   done: boolean
   focusSeconds: number
+  plannedFocuses: number
+  focusCount: number
 }

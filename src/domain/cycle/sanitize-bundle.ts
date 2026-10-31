@@ -1,7 +1,9 @@
 import { durationSec } from '@domain/cycle/duration-sec'
 import { normalizeStats } from '@domain/cycle/normalize-stats'
+import { pruneJournal } from '@domain/cycle/record-journal'
 import { todayKey } from '@domain/cycle/today-key'
 import type { Bundle } from '@domain/models/cycle/bundle'
+import type { JournalDay, JournalOffering } from '@domain/models/cycle/journal'
 import type { Phase } from '@domain/models/cycle/phase'
 import type { Session } from '@domain/models/cycle/session'
 import { defaultSettings, type Settings } from '@domain/models/cycle/settings'
@@ -28,6 +30,9 @@ export function sanitizeBundle(raw: unknown): Bundle {
     longPauseMin: clampInt(incoming.longPauseMin, 5, 45, defaultSettings.longPauseMin),
     autoAdvance: incoming.autoAdvance !== false,
     sound: incoming.sound !== false,
+    soundVolume: clampInt(incoming.soundVolume, 0, 100, defaultSettings.soundVolume),
+    repeatBell: incoming.repeatBell === true,
+    warnTwoMinutes: incoming.warnTwoMinutes === true,
     longPauseEnabled: incoming.longPauseEnabled !== false,
     pauseKind: incoming.pauseKind === 'brief' || incoming.pauseKind === 'presence' ? incoming.pauseKind : 'decade',
     accent:
@@ -56,6 +61,8 @@ export function sanitizeBundle(raw: unknown): Bundle {
             title: title.slice(0, 140),
             done: task.done === true,
             focusSeconds: clampInt(task.focusSeconds, 0, 60 * 60 * 24 * 30, 0),
+            plannedFocuses: clampInt(task.plannedFocuses, 1, 12, 1),
+            focusCount: clampInt(task.focusCount, 0, 100000, 0),
           },
         ]
       })
@@ -98,5 +105,64 @@ export function sanitizeBundle(raw: unknown): Bundle {
     session,
     intention: typeof source.intention === 'string' ? source.intention.slice(0, 180) : '',
     quoteIndex: clampInt(source.quoteIndex, 0, 1000, 0),
+    journal: sanitizeJournal(source.journal),
   }
+}
+
+const dayKeyPattern = /^\d{4}-\d{2}-\d{2}$/
+
+function sanitizeJournal(raw: unknown): JournalDay[] {
+  if (!Array.isArray(raw)) return []
+  const merged = new Map<string, JournalDay>()
+  for (const item of raw) {
+    const day = sanitizeDay(item)
+    if (!day) continue
+    const existing = merged.get(day.date)
+    if (!existing) {
+      merged.set(day.date, day)
+      continue
+    }
+    existing.seconds += day.seconds
+    for (const offering of day.offerings) mergeOffering(existing, offering)
+  }
+  return pruneJournal([...merged.values()])
+}
+
+function sanitizeDay(raw: unknown): JournalDay | null {
+  if (!raw || typeof raw !== 'object') return null
+  const day = raw as Partial<JournalDay>
+  if (typeof day.date !== 'string' || !dayKeyPattern.test(day.date)) return null
+  const offerings = Array.isArray(day.offerings) ? day.offerings.flatMap((item) => {
+    const offering = sanitizeOffering(item)
+    return offering ? [offering] : []
+  }) : []
+  return {
+    date: day.date,
+    seconds: clampInt(day.seconds, 0, 60 * 60 * 48, 0),
+    offerings,
+  }
+}
+
+function sanitizeOffering(raw: unknown): JournalOffering | null {
+  if (!raw || typeof raw !== 'object') return null
+  const offering = raw as Partial<JournalOffering>
+  const name = typeof offering.name === 'string' ? offering.name.trim().slice(0, 140) : ''
+  if (!name) return null
+  return {
+    id: typeof offering.id === 'string' && offering.id ? offering.id : null,
+    name,
+    seconds: clampInt(offering.seconds, 0, 60 * 60 * 48, 0),
+    entries: clampInt(offering.entries, 0, 100000, 0),
+  }
+}
+
+function mergeOffering(day: JournalDay, offering: JournalOffering): void {
+  const existing = day.offerings.find((item) => item.id === offering.id)
+  if (!existing) {
+    day.offerings.push(offering)
+    return
+  }
+  existing.seconds += offering.seconds
+  existing.entries += offering.entries
+  existing.name = offering.name
 }

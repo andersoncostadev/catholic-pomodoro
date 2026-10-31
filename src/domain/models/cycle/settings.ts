@@ -9,6 +9,9 @@ export type Settings = {
   longPauseMin: number
   autoAdvance: boolean
   sound: boolean
+  soundVolume: number
+  repeatBell: boolean
+  warnTwoMinutes: boolean
   longPauseEnabled: boolean
   pauseKind: PauseKind
   accent: Accent
@@ -22,6 +25,9 @@ export const defaultSettings: Settings = {
   longPauseMin: 15,
   autoAdvance: true,
   sound: true,
+  soundVolume: 100,
+  repeatBell: false,
+  warnTwoMinutes: false,
   longPauseEnabled: true,
   pauseKind: 'decade',
   accent: 'gold',

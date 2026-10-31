@@ -20,7 +20,13 @@ export function TimerFlow() {
   const [panel, setPanel] = useState<Panel>(null)
   const days = pomodoro.stats.streak
   const stayPhaseRef = useRef(pomodoro.stayPhase)
+  const panelRef = useRef(panel)
+  const leaveRef = useRef(pomodoro.leavePhase)
+  const toggleRef = useRef(pomodoro.toggle)
   stayPhaseRef.current = pomodoro.stayPhase
+  panelRef.current = panel
+  leaveRef.current = pomodoro.leavePhase
+  toggleRef.current = pomodoro.toggle
 
   useEffect(() => {
     document.body.style.overflow = panel ? 'hidden' : ''
@@ -33,6 +39,29 @@ export function TimerFlow() {
     if (panel === 'liturgy' && liturgy == null) setPanel(null)
     if (panel === 'saint' && saint == null) setPanel(null)
   }, [panel, liturgy, saint])
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.repeat || event.metaKey || event.ctrlKey || event.altKey) return
+      const target = event.target
+      if (target instanceof HTMLElement) {
+        const tag = target.tagName
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || tag === 'BUTTON' || tag === 'A' || tag === 'SUMMARY' || target.isContentEditable) return
+      }
+      if (panelRef.current || leaveRef.current) return
+      if (event.code === 'Space') {
+        event.preventDefault()
+        toggleRef.current()
+        return
+      }
+      if (event.key !== 't' && event.key !== 'T') return
+      event.preventDefault()
+      setPanel('tasks')
+      window.setTimeout(() => document.getElementById('offer-name')?.focus(), 0)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
 
   useEffect(() => {
     if (!panel && !pomodoro.leavePhase) return
