@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { MusicMenu } from '@components/MusicMenu'
 import { Panels } from '@components/Panels'
+import { RankingNamePrompt } from '@components/Ranking'
 import { Story } from '@components/Story'
 import { TimerHero } from '@components/TimerHero'
 import type { PauseKind } from '@domain/models/cycle/pause-kind'
@@ -8,25 +9,30 @@ import type { Phase } from '@domain/models/cycle/phase'
 import { useBackdrop } from '@main/factories/flows/useBackdrop'
 import { useLiturgy } from '@main/factories/flows/useLiturgy'
 import { usePomodoro } from '@main/factories/flows/usePomodoro'
+import { useRanking } from '@main/factories/flows/useRanking'
 import { useSaintDay } from '@main/factories/flows/useSaintDay'
 
 type Panel = 'tasks' | 'settings' | 'streak' | 'liturgy' | 'saint' | null
 
 export function TimerFlow() {
   const pomodoro = usePomodoro()
+  const ranking = useRanking()
   const backdrop = useBackdrop()
   const liturgy = useLiturgy()
   const saint = useSaintDay()
   const [panel, setPanel] = useState<Panel>(null)
+  const [askName, setAskName] = useState(() => ranking.identity == null)
   const days = pomodoro.stats.streak
   const stayPhaseRef = useRef(pomodoro.stayPhase)
   const panelRef = useRef(panel)
   const leaveRef = useRef(pomodoro.leavePhase)
   const toggleRef = useRef(pomodoro.toggle)
+  const askNameRef = useRef(askName)
   stayPhaseRef.current = pomodoro.stayPhase
   panelRef.current = panel
   leaveRef.current = pomodoro.leavePhase
   toggleRef.current = pomodoro.toggle
+  askNameRef.current = askName && ranking.identity == null
 
   useEffect(() => {
     document.body.style.overflow = panel ? 'hidden' : ''
@@ -48,7 +54,7 @@ export function TimerFlow() {
         const tag = target.tagName
         if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || tag === 'BUTTON' || tag === 'A' || tag === 'SUMMARY' || target.isContentEditable) return
       }
-      if (panelRef.current || leaveRef.current) return
+      if (panelRef.current || leaveRef.current || askNameRef.current) return
       if (event.code === 'Space') {
         event.preventDefault()
         toggleRef.current()
@@ -64,9 +70,13 @@ export function TimerFlow() {
   }, [])
 
   useEffect(() => {
-    if (!panel && !pomodoro.leavePhase) return
+    if (!panel && !pomodoro.leavePhase && !(askName && ranking.identity == null)) return
     const onKey = (event: KeyboardEvent) => {
       if (event.key !== 'Escape') return
+      if (askNameRef.current) {
+        setAskName(false)
+        return
+      }
       if (panel) {
         setPanel(null)
         return
@@ -75,7 +85,7 @@ export function TimerFlow() {
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [panel, pomodoro.leavePhase])
+  }, [panel, pomodoro.leavePhase, askName, ranking.identity])
 
   function begin() {
     document.getElementById('timer')?.scrollIntoView({ behavior: 'smooth' })
@@ -164,11 +174,13 @@ export function TimerFlow() {
         ) : null}
       </div>
       <Story onBegin={begin} />
+      {askName && !ranking.identity ? <RankingNamePrompt onJoin={ranking.join} onLater={() => setAskName(false)} /> : null}
       {panel ? (
         <Panels
           panel={panel}
           onClose={() => setPanel(null)}
           pomodoro={pomodoro}
+          ranking={ranking}
           backdrop={backdrop}
           liturgy={liturgy}
           saint={saint}

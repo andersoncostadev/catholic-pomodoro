@@ -6,13 +6,14 @@ alwaysApply: false
 
 # Data e infra
 
-O caso de uso em `src/data/usecases` implementa o contrato de `domain/usecases`. Carga e gravação falam só com `IStorage`. A liturgia e o santo do dia falam com o protocolo de origem e não gravam. `src/infra` é o adaptador concreto.
+O caso de uso em `src/data/usecases` implementa o contrato de `domain/usecases`. Carga e gravação falam só com `IStorage`. A liturgia, o santo do dia e o ranking falam com o protocolo de origem. A liturgia e o santo não gravam. `src/infra` é o adaptador concreto.
 
 ## Inviolável
 
 - `data` não chama `localStorage` nem `fetch`, e não importa `infra` nem React.
 - `localStorage` só em `infra/cache/local-storage-adapter.ts`.
-- O `GET` da liturgia e o `GET` do santo só em `infra/http`. Tempo limite de 8 segundos. Falha vira `null`, sem gravar o corpo e sem chave nova.
+- O `GET` da liturgia, o `GET` do santo e `/api/ranking` só em `infra/http`. Tempo limite de 8 segundos. Falha da liturgia e do santo vira `null`, sem gravar o corpo. Falha do ranking vira ausência. A chave `pomodoro-catolico-ranking` existe porque a spec 015 pediu.
+- `remove` de `IStorage` apaga uma chave e engole falha de storage, devolvendo `false` quando a chave continua.
 - O adaptador do santo lê a URL de `VITE_SAINT_API_URL`. Sem a variável, devolve `null` sem `fetch`.
 - Sino e notificação só em `infra/browser`. Frequência, duração do sino e o título `Pomodoro Católico` não mudam sem a spec pedir.
 - `get` e `set` de `IStorage` engolem falha de storage.

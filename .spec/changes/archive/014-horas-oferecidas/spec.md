@@ -31,7 +31,7 @@ Branch: `feature/offered-hours`.
 
 ### Fora desta mudança
 
-Conta, login, outras pessoas no ranking, Todoist, webhook, alarme noutro aparelho, projeto, nota por tarefa, tique durante o foco, gráfico do ano, exportação, intervalo livre no lugar do “a cada 4 focos”, e tema que troca sozinho enquanto o foco corre. O ranking com outras pessoas fica na [015-ranking-publico](../../015-ranking-publico/spec.md). A pausa longa continua a cada quatro focos, com o interruptor que já existe.
+Conta, login, outras pessoas no ranking, Todoist, webhook, alarme noutro aparelho, projeto, nota por tarefa, tique durante o foco, gráfico do ano, exportação, intervalo livre no lugar do “a cada 4 focos”, e tema que troca sozinho enquanto o foco corre. O ranking com outras pessoas fica na [015-ranking-publico](../015-ranking-publico/spec.md). A pausa longa continua a cada quatro focos, com o interruptor que já existe.
 
 ### Duas abas no painel da sequência
 

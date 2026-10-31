@@ -5,7 +5,7 @@ alwaysApply: true
 
 # Pomodoro Católico
 
-Uma página em `src/`. React 19, Vite e TypeScript. Não hospeda API, BFF, conta nem servidor. As saídas de rede são dois `GET`: a liturgia e o santo do dia.
+Uma página em `src/`. React 19, Vite e TypeScript. Não há BFF, conta nem servidor acordado. As saídas de rede são o `GET` da liturgia, o `GET` do santo do dia e `/api/ranking`.
 
 | Camada | Pasta | Pode importar |
 |---|---|---|
@@ -20,7 +20,7 @@ Uma página em `src/`. React 19, Vite e TypeScript. Não hospeda API, BFF, conta
 
 - A tela chama factory. Só `main/factories` instancia storage e caso de uso.
 - Duração, sequência e avanço de fase ficam em `domain/cycle`. O componente não recalcula isso.
-- Chaves: `pomodoro-catolico-v1`, `pomodoro-catolico-fundo`, `pomodoro-catolico-music`. Sem chave nova, salvo a spec pedir.
-- A página não hospeda API, BFF, conta nem servidor. As saídas de rede são o `GET` da liturgia e o `GET` do santo do dia, nos adaptadores em `infra/http`, e nenhum dos textos é gravado. A API do santo vive fora deste repositório; sem `VITE_SAINT_API_URL`, não há pedido.
+- Chaves: `pomodoro-catolico-v1`, `pomodoro-catolico-fundo`, `pomodoro-catolico-music` e `pomodoro-catolico-ranking`. A chave do ranking existe porque a spec 015 pediu. Sem outra chave nova, salvo a spec pedir.
+- Não há BFF, conta nem servidor acordado. As saídas de rede são o `GET` da liturgia, o `GET` do santo do dia e `/api/ranking` (`GET`, `POST` e `DELETE`), nos adaptadores em `infra/http`. A liturgia e o santo não são gravados. A API do santo vive fora deste repositório; sem `VITE_SAINT_API_URL`, não há pedido. `/api/ranking` é a função em `functions/`, no Pages, e não entra no bundle do Vite. `src/` não importa `functions/`.
 - Sem Axios, Next, MSAL, cookie, JWT ou styled-components.
 - Tarefa que cruza camadas: skill `dev-orchestrator`.

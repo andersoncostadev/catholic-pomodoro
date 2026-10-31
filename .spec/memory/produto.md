@@ -10,6 +10,7 @@ Página única para rezar e trabalhar no mesmo ritmo: um minuto de oração, vin
 - Na pausa, reza uma dezena do Terço, uma oração breve ou permanece em silêncio.
 - Dá nome à tarefa oferecida e, se quiser, a uma intenção do dia. Cada oferta pede de 1 a 12 entradas de foco; ao adicionar, o padrão é 1. A linha mostra quantas já foram concluídas, no formato “N de M”, junto do tempo. Chegar ao número não marca a oferta como feita. Adicionar um nome grava a tarefa, deixa essa tarefa escolhida e fecha o painel. Intenção, marcar, escolher, remover e mudar as entradas de uma oferta já gravada permanecem no painel.
 - Acompanha a sequência: um dia conta quando ao menos um foco é concluído. O mesmo botão abre o painel Sequência, na aba Resumo: horas oferecidas da semana ou do mês, dias com foco, a sequência e um gráfico de barras. A aba Ofertas lista o que a própria pessoa ofereceu no período, do maior tempo ao menor. Foco sem tarefa aparece como “Sem nome”. Pode encerrar o foco antes do zero: o dia entra na sequência, a tarefa escolhida recebe os segundos e uma entrada, e o diário daquele dia também. Sair da fase em curso não anota.
+- Se quiser, grava um apelido e aparece na aba Ranking, ao lado de Resumo e Ofertas, na lista da semana com outras pessoas. A semana é a de Brasília. Sem apelido, nada é publicado. Sair apaga a linha para as outras pessoas.
 - Com “Começar a oração sozinha” ligado, o fim do foco começa a pausa e o fim da pausa começa a oração. O foco espera “Começar o foco”. Com o interruptor desligado, nenhuma fase seguinte começa sozinha.
 - Com a página à frente e nenhum painel aberto, Espaço começa ou pausa. T abre o nome da oferta. Escape fecha o painel.
 - Abre Ajustes para mudar os tempos, o tipo de pausa, a cena, o fundo, o ambiente (Capela, Alvorada, Noite) e a cor do anel e do botão. “Restaurar 1 · 25 · 5 · 15” devolve esses quatro tempos. “1 · 25 · 10 · 20” grava oração 1, foco 25, pausa 10 e pausa longa 20, e não muda o restante.
@@ -33,5 +34,6 @@ Os quatro mistérios do dia (gozosos, dolorosos, gloriosos, luminosos) seguem o 
 
 - Sessão, tarefas, intenção, estatísticas, ajustes e o diário dos últimos 62 dias de foco concluído, na chave `pomodoro-catolico-v1`. Dias anteriores a esse diário entram no gráfico como zero.
 - Fundo escolhido, na chave `pomodoro-catolico-fundo`.
+- Apelido e identificador de quem entrou no ranking, na chave `pomodoro-catolico-ranking`.
 
-Não há conta nem sincronização. A página não hospeda API. Há dois `GET`: a liturgia do dia a `liturgia.cloudhub.ia.br` e o santo do dia à API do calendário dos santos. Nenhum dos dois textos é gravado.
+Não há conta nem mensalidade. A liturgia e o santo do dia continuam dois `GET` externos, e esses textos não são gravados. O ranking da semana pede a própria origem em `/api/ranking`.

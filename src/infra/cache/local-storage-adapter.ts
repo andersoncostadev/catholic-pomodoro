@@ -16,4 +16,13 @@ export class LocalStorageAdapter implements IStorage {
       /* armazenamento cheio ou bloqueado: o timer segue só na memória */
     }
   }
+
+  remove(key: string): boolean {
+    try {
+      localStorage.removeItem(key)
+      return localStorage.getItem(key) == null
+    } catch {
+      return false
+    }
+  }
 }

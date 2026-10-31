@@ -41,4 +41,6 @@
 - A spec `010-santo-do-dia` usa a branch `feature/saint-of-the-day`.
 - A spec `011-api-do-santo` usa a branch `feature/saint-calendar-api`.
 - A spec `012-mais-sobre-o-santo` usa a branch `feature/saint-details`.
+- A spec `013-catalogo-limpo-do-santo` usa a branch `feature/clean-saint-catalog`, só na API.
 - A spec `014-horas-oferecidas` usa a branch `feature/offered-hours`.
+- A spec `015-ranking-publico` usa a branch `feature/public-ranking`.

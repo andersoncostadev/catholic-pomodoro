@@ -14,15 +14,15 @@
 ```text
 main.tsx
   -> app/App.tsx
-       -> presentation/flows/timer
-            -> main/factories/flows (usePomodoro, useBackdrop, useChant, useLiturgy, useSaintDay)
+            -> presentation/flows/timer
+                 -> main/factories/flows (usePomodoro, useBackdrop, useChant, useLiturgy, useSaintDay, useRanking)
                  -> main/factories/usecases (makeLoad*, makeSave*)
                       -> data/usecases
                            -> data/protocols/cache (IStorage)
                                 -> infra/cache/local-storage-adapter
-                           -> data/protocols/http (corpo da liturgia ou do santo, ou null)
-                                -> infra/http (GET da liturgia e GET do santo)
-                 -> domain/cycle, domain/liturgy, domain/saint-day e domain/catalogs
+                           -> data/protocols/http (corpo da liturgia ou do santo, ou null; ranking com carregar, publicar e sair)
+                                -> infra/http (GET da liturgia, GET do santo e /api/ranking)
+                 -> domain/cycle, domain/liturgy, domain/saint-day, domain/ranking e domain/catalogs
                  -> infra/browser (sino e notificação), só dentro da factory
 ```
 
@@ -45,7 +45,7 @@ Import novo usa o alias, sem sufixo `.ts`.
 
 ## Decisões já tomadas
 
-- Uma página. A barra abre painéis; não há rotas. Não há Next, App Router, Axios, MSAL, cookie nem login. A página não hospeda API. Há dois `GET`: `https://liturgia.cloudhub.ia.br/v1/liturgia`, com `dia`, `mes` e `ano`, e `{VITE_SAINT_API_URL}/santo-do-dia/{mm}-{dd}`, na API ASP.NET Core do calendário dos santos, que vive fora deste repositório. Sem `VITE_SAINT_API_URL`, o adaptador do santo não faz pedido. Nenhum dos textos entra no `localStorage`.
+- Uma página. A barra abre painéis; não há rotas. Não há Next, App Router, Axios, MSAL, cookie nem login. Há dois `GET` externos: `https://liturgia.cloudhub.ia.br/v1/liturgia`, com `dia`, `mes` e `ano`, e `{VITE_SAINT_API_URL}/santo-do-dia/{mm}-{dd}`, na API ASP.NET Core do calendário dos santos, que vive fora deste repositório. Sem `VITE_SAINT_API_URL`, o adaptador do santo não faz pedido. Nenhum dos textos entra no `localStorage`. O ranking pede a própria origem em `/api/ranking` (`GET`, `POST` e `DELETE`), respondido pela função em `functions/api/ranking.ts` no Pages, com D1 `RANKING_DB` na base `catholic-pomodoro-ranking`, no plano gratuito. A função não entra no bundle do Vite. Falha, corpo inválido ou limite diário viram ausência e o timer segue. O apelido fica na chave `pomodoro-catolico-ranking`.
 - O ciclo padrão é 1 · 25 · 5, com pausa longa de 15 minutos a cada quatro focos.
 - A pausa pode ser dezena, oração breve ou presença.
 - Ambientes: `capela` (escuro quente), `alvorada` (claro) e `noite` (azul escuro).
@@ -58,8 +58,8 @@ Import novo usa o alias, sem sufixo `.ts`.
 
 ## Restrições
 
-- Não introduzir backend, conta, login nem gravação fora do `localStorage`. A página não hospeda API. As saídas de rede são o `GET` da liturgia e o `GET` do santo do dia, e nenhum dos textos é gravado.
-- Não quebrar a leitura das chaves `pomodoro-catolico-v1`, `pomodoro-catolico-fundo` e `pomodoro-catolico-music`. Campo novo entra com valor padrão quando o JSON antigo não o tem.
+- Não introduzir conta, login nem mensalidade. As saídas de rede são o `GET` da liturgia, o `GET` do santo do dia e `/api/ranking`. Os textos da liturgia e do santo não são gravados. O ranking só publica um foco já concluído de quem gravou apelido.
+- Não quebrar a leitura das chaves `pomodoro-catolico-v1`, `pomodoro-catolico-fundo` e `pomodoro-catolico-music`. A chave `pomodoro-catolico-ranking` guarda só `{ id, name }`. Campo novo entra com valor padrão quando o JSON antigo não o tem.
 - Não mudar duração, sequência ou avanço de fase dentro de um componente.
 - Não aplicar um véu ou uma cor que deixe texto ou botão ilegível num fundo ou ambiente que o app já oferece.
 - Não remover crédito e licença de imagem ou canto.

@@ -51,7 +51,7 @@ public/
 
 - `domain`: modelos, catálogos e regra pura. Sem React, sem `localStorage`, sem importar `data`, `infra`, `main` nem `presentation`.
 - `data`: caso de uso. Carga e gravação falam com `IStorage`. A liturgia e o santo falam com o protocolo de origem e não gravam. Não chama `localStorage` nem `fetch`, e não importa `infra`.
-- `infra`: `LocalStorageAdapter`, sino, notificação, o `GET` da liturgia e o `GET` do santo. Implementa o protocolo; não decide o ciclo. A página não hospeda API. As saídas de rede são esses dois `GET`, e os textos não são gravados.
+- `infra`: `LocalStorageAdapter`, sino, notificação, o `GET` da liturgia, o `GET` do santo e `/api/ranking`. Implementa o protocolo; não decide o ciclo. A liturgia e o santo não são gravados. A função do ranking mora em `functions/` e não entra no bundle do Vite.
 - `main`: único lugar que instancia adaptador e caso de uso. Os hooks de fluxo leem e gravam pelas factories. Duração, sequência e avanço continuam em `domain/cycle`.
 - `presentation`: o que a pessoa vê. Chama factory. Não instancia caso de uso, não lê `localStorage` e não importa `infra` nem `data/usecases`.
 - `app`: casca. Renderiza o fluxo do timer. Não há segunda rota.
@@ -72,4 +72,4 @@ public/
 - Texto de oração, mistério e citação fica em `domain/catalogs/content.ts`.
 - Fundo e canto são catálogos, com crédito e licença junto de cada item.
 - Aparência fica no CSS, acionada pelos `data-*` do `.app`.
-- Não criar API, banco, conta nem servidor.
+- Não criar BFF, conta nem servidor acordado. O ranking usa a função do Pages e o D1 gratuito da mesma conta.

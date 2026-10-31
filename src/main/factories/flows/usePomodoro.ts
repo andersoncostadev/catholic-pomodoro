@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { durationSec } from '@domain/cycle/duration-sec'
 import { elapsedSec } from '@domain/cycle/elapsed-sec'
+import { focusSecondsOrNull } from '@domain/ranking/focus-seconds'
 import { nextPhaseAfter } from '@domain/cycle/next-phase-after'
 import { normalizeStats } from '@domain/cycle/normalize-stats'
 import { noticeFor } from '@domain/cycle/notice-for'
@@ -19,9 +20,13 @@ import { askNotification, notifyIfHidden } from '@main/factories/browser/notific
 import { playBell, unlockAudio } from '@main/factories/browser/audio-bell'
 import { makeLoadBundle } from '@main/factories/usecases/cycle/load-bundle'
 import { makeSaveBundle } from '@main/factories/usecases/cycle/save-bundle'
+import { makeLoadRankingIdentity } from '@main/factories/usecases/ranking/load-identity'
+import { makePublishRanking } from '@main/factories/usecases/ranking/publish-ranking'
 
 const loadBundle = makeLoadBundle()
 const saveBundle = makeSaveBundle()
+const loadRankingIdentity = makeLoadRankingIdentity()
+const publishRanking = makePublishRanking()
 const initial = loadBundle.handle()
 
 const handledDeadlines = new Set<number>()
@@ -109,6 +114,7 @@ export function usePomodoro() {
     let nextTasks = current.tasks
     let nextJournal = current.journal
     let wrapped = false
+    let focusSeconds: number | null = null
 
     if (finished === 'offering') {
       nextStats = { ...nextStats, offeringsToday: nextStats.offeringsToday + 1 }
@@ -117,6 +123,7 @@ export function usePomodoro() {
       nextStats = recorded.stats
       wrapped = recorded.wrapped
       const spent = elapsedSec(current.session, Date.now())
+      focusSeconds = focusSecondsOrNull(spent)
       const selected = current.tasks.find((task) => task.id === current.selectedTaskId)
       nextJournal = recordJournal(current.journal, {
         seconds: spent,
@@ -146,6 +153,14 @@ export function usePomodoro() {
     const message = noticeFor(finished)
 
     saveBundle.handle({ ...current, stats: nextStats, tasks: nextTasks, session: nextSession, journal: nextJournal })
+    if (focusSeconds != null) {
+      const identity = loadRankingIdentity.handle()
+      if (identity) {
+        void publishRanking
+          .handle({ id: identity.id, name: identity.name, seconds: focusSeconds })
+          .catch(() => undefined)
+      }
+    }
     setStats(nextStats)
     setTasks(nextTasks)
     setJournal(nextJournal)

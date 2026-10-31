@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { LiturgyPanel } from '@components/Liturgy'
+import { RankingPanel } from '@components/Ranking'
 import { SaintDayPanel } from '@components/SaintDay'
 import { formatSpent } from '@domain/cycle/format-spent'
 import { orderTasks } from '@domain/cycle/order-tasks'
@@ -11,6 +12,7 @@ import type { Scene } from '@domain/models/backdrop/scene'
 import type { LiturgyDay } from '@domain/models/liturgy/day'
 import type { SaintDay } from '@domain/models/saint-day/day'
 import type { PomodoroController } from '@main/factories/flows/usePomodoro'
+import type { RankingController } from '@main/factories/flows/useRanking'
 
 type Drawer = 'tasks' | 'settings' | 'streak' | 'liturgy' | 'saint'
 
@@ -23,6 +25,7 @@ export function Panels({
   panel,
   onClose,
   pomodoro,
+  ranking,
   backdrop,
   liturgy,
   saint,
@@ -30,6 +33,7 @@ export function Panels({
   panel: Drawer
   onClose: () => void
   pomodoro: PomodoroController
+  ranking: RankingController
   backdrop: BackdropChoice
   liturgy: LiturgyDay | null
   saint: SaintDay | null
@@ -46,7 +50,7 @@ export function Panels({
         </header>
         {panel === 'tasks' ? <Tasks pomodoro={pomodoro} onClose={onClose} /> : null}
         {panel === 'settings' ? <Settings pomodoro={pomodoro} backdrop={backdrop} /> : null}
-        {panel === 'streak' ? <Streak pomodoro={pomodoro} /> : null}
+        {panel === 'streak' ? <Streak pomodoro={pomodoro} ranking={ranking} /> : null}
         {panel === 'liturgy' && liturgy ? <LiturgyPanel day={liturgy} /> : null}
         {panel === 'saint' && saint ? <SaintDayPanel saint={saint} /> : null}
       </aside>
@@ -381,8 +385,8 @@ function SceneThumb({ scene }: { scene: Scene }) {
   return <img src={saint.src} alt="" />
 }
 
-function Streak({ pomodoro }: { pomodoro: PomodoroController }) {
-  const [tab, setTab] = useState<'resumo' | 'ofertas'>('resumo')
+function Streak({ pomodoro, ranking }: { pomodoro: PomodoroController; ranking: RankingController }) {
+  const [tab, setTab] = useState<'resumo' | 'ofertas' | 'ranking'>('resumo')
   const [period, setPeriod] = useState(() => periodContaining(new Date(), 'week'))
   const summary = summarizePeriod(pomodoro.journal, period)
   const offerings = rankOfferings(pomodoro.journal, period)
@@ -398,7 +402,13 @@ function Streak({ pomodoro }: { pomodoro: PomodoroController }) {
         <button type="button" role="tab" aria-selected={tab === 'ofertas'} className={tab === 'ofertas' ? 'is-on' : ''} onClick={() => setTab('ofertas')}>
           Ofertas
         </button>
+        <button type="button" role="tab" aria-selected={tab === 'ranking'} className={tab === 'ranking' ? 'is-on' : ''} onClick={() => setTab('ranking')}>
+          <span aria-hidden="true">🏆 </span>Ranking
+        </button>
       </div>
+      {tab === 'ranking' ? <RankingPanel ranking={ranking} /> : null}
+      {tab === 'ranking' ? null : (
+      <>
       <div className="period-nav">
         <button
           type="button"
@@ -481,6 +491,8 @@ function Streak({ pomodoro }: { pomodoro: PomodoroController }) {
             </ol>
           )}
         </div>
+      )}
+      </>
       )}
     </div>
   )

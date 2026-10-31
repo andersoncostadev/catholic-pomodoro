@@ -1614,6 +1614,117 @@ button:disabled { cursor: default; opacity: 0.55; }
 
 .offer-rank li span:nth-child(2) { overflow-wrap: anywhere; }
 
+.rank-list { gap: 0.55rem; }
+
+.rank-list li {
+  grid-template-columns: 2rem minmax(0, 1fr) auto;
+  align-items: center;
+  padding: 0.4rem 0.55rem;
+  border-radius: 0.9rem;
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+}
+
+.offer-rank li.is-you {
+  background: color-mix(in srgb, var(--ring) 22%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ring) 50%, transparent);
+}
+
+.rank-place {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.rank-spark {
+  margin: 0;
+  font-size: 1.35rem;
+  letter-spacing: 0.35rem;
+  line-height: 1;
+}
+
+.rank-you {
+  margin-left: 0.35rem;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.rank-gate {
+  position: fixed;
+  z-index: 45;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 4.6rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 4.4rem 1rem 1rem;
+  background: color-mix(in srgb, #120e0b 42%, transparent);
+}
+
+.rank-gate-card {
+  width: min(100%, 22rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  text-align: center;
+}
+
+.rank-gate-card h2 {
+  margin: 0;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 1.7rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.rank-gate-card .field {
+  text-align: left;
+  min-width: 0;
+}
+
+.rank-gate-card .field input {
+  width: 100%;
+  color: var(--ink);
+}
+
+.rank-gate-card .empty {
+  color: color-mix(in srgb, var(--ink) 88%, transparent);
+}
+
+.rank-gate-card .leave-actions { margin-top: 0; }
+
+.rank-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  min-width: 0;
+}
+
+.rank-panel .empty {
+  color: color-mix(in srgb, var(--ink) 88%, transparent);
+}
+
+.rank-panel .text-btn {
+  color: var(--ink);
+}
+
+.rank-form {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.rank-form .field { min-width: 0; }
+
+.rank-form input {
+  flex: 0 1 auto;
+  width: 100%;
+}
+
+.rank-form button {
+  align-self: flex-start;
+  max-width: 100%;
+}
+
 .offer-rank strong { font-variant-numeric: tabular-nums; }
 
 @media (max-width: 899px) {

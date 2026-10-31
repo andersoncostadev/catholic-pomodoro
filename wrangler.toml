@@ -1,0 +1,8 @@
+name = "catholic-pomodoro"
+compatibility_date = "2025-04-01"
+pages_build_output_dir = "dist"
+
+[[d1_databases]]
+binding = "RANKING_DB"
+database_name = "catholic-pomodoro-ranking"
+database_id = "647a527c-c764-463a-9a91-a4e8944ae150"
