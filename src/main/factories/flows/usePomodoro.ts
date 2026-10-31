@@ -5,7 +5,11 @@ import { nextPhaseAfter } from '@domain/cycle/next-phase-after'
 import { normalizeStats } from '@domain/cycle/normalize-stats'
 import { noticeFor } from '@domain/cycle/notice-for'
 import { recordFocus } from '@domain/cycle/record-focus'
+import { recordJournal } from '@domain/cycle/record-journal'
 import { remainingOf } from '@domain/cycle/remaining-of'
+import { startsOnItsOwn } from '@domain/cycle/starts-on-its-own'
+import { reachesTwoMinutes, twoMinuteBody } from '@domain/cycle/two-minute-warning'
+import { unnamedOfferingName } from '@domain/models/cycle/journal'
 import type { Bundle } from '@domain/models/cycle/bundle'
 import type { Phase } from '@domain/models/cycle/phase'
 import type { Session } from '@domain/models/cycle/session'
@@ -38,16 +42,19 @@ export function usePomodoro() {
   const [session, setSession] = useState<Session>(initial.session)
   const [intention, setIntention] = useState(initial.intention)
   const [quoteIndex, setQuoteIndex] = useState(initial.quoteIndex)
+  const [journal, setJournal] = useState(initial.journal)
   const [notice, setNotice] = useState<string | null>(null)
   const [leavePhase, setLeavePhase] = useState<Phase | null>(null)
   const [now, setNow] = useState(() => Date.now())
 
   const snap = useRef<Bundle>(initial)
-  snap.current = { settings, tasks, selectedTaskId, stats, session, intention, quoteIndex }
+  const warnedEntry = useRef<number | null>(null)
+  const previousRemaining = useRef<number | null>(null)
+  snap.current = { settings, tasks, selectedTaskId, stats, session, intention, quoteIndex, journal }
 
   useEffect(() => {
     saveBundle.handle(snap.current)
-  }, [settings, tasks, selectedTaskId, stats, session, intention, quoteIndex])
+  }, [settings, tasks, selectedTaskId, stats, session, intention, quoteIndex, journal])
 
   useEffect(() => {
     const id = window.setInterval(() => setNow(Date.now()), 250)
@@ -73,21 +80,6 @@ export function usePomodoro() {
     if (alreadyHandled(session.endsAt)) return
     finishPhase(session.endsAt)
   }, [now, session.running, session.endsAt])
-
-  useEffect(() => {
-    const onKey = (event: KeyboardEvent) => {
-      if (event.code !== 'Space' || event.repeat) return
-      const target = event.target
-      if (target instanceof HTMLElement) {
-        const tag = target.tagName
-        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'BUTTON' || tag === 'A' || tag === 'SUMMARY' || target.isContentEditable) return
-      }
-      event.preventDefault()
-      toggle()
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [])
 
   function finishPhase(endsAt: number) {
     const current = snap.current
@@ -115,6 +107,7 @@ export function usePomodoro() {
     const finished = current.session.phase
     let nextStats = normalizeStats(current.stats)
     let nextTasks = current.tasks
+    let nextJournal = current.journal
     let wrapped = false
 
     if (finished === 'offering') {
@@ -124,9 +117,14 @@ export function usePomodoro() {
       nextStats = recorded.stats
       wrapped = recorded.wrapped
       const spent = elapsedSec(current.session, Date.now())
-      if (current.selectedTaskId) {
+      const selected = current.tasks.find((task) => task.id === current.selectedTaskId)
+      nextJournal = recordJournal(current.journal, {
+        seconds: spent,
+        offering: selected ? { id: selected.id, name: selected.title } : { id: null, name: unnamedOfferingName },
+      })
+      if (selected) {
         nextTasks = current.tasks.map((task) =>
-          task.id === current.selectedTaskId ? { ...task, focusSeconds: task.focusSeconds + spent } : task,
+          task.id === selected.id ? { ...task, focusSeconds: task.focusSeconds + spent, focusCount: task.focusCount + 1 } : task,
         )
       }
     } else {
@@ -134,8 +132,8 @@ export function usePomodoro() {
     }
 
     const nextPhase = nextPhaseAfter(finished, wrapped)
-    const overdue = endsAt != null && Date.now() - endsAt > 2000
-    const auto = current.settings.autoAdvance && !overdue
+    const delayMs = endsAt == null ? 0 : Date.now() - endsAt
+    const auto = startsOnItsOwn(finished, current.settings.autoAdvance, delayMs)
     const sec = durationSec(nextPhase, current.settings)
     const nextSession: Session = {
       phase: nextPhase,
@@ -147,13 +145,14 @@ export function usePomodoro() {
     }
     const message = noticeFor(finished)
 
-    saveBundle.handle({ ...current, stats: nextStats, tasks: nextTasks, session: nextSession })
+    saveBundle.handle({ ...current, stats: nextStats, tasks: nextTasks, session: nextSession, journal: nextJournal })
     setStats(nextStats)
     setTasks(nextTasks)
+    setJournal(nextJournal)
     setSession(nextSession)
     setNotice(message)
     setLeavePhase(null)
-    if (current.settings.sound) playBell()
+    if (current.settings.sound) playBell(current.settings.soundVolume, current.settings.repeatBell)
     notifyIfHidden(message)
   }
 
@@ -260,13 +259,27 @@ export function usePomodoro() {
     if (nextSession !== sessionPrev) setSession(nextSession)
   }
 
-  function addTask(title: string) {
+  function addTask(title: string, plannedFocuses = 1) {
     const clean = title.trim()
     if (!clean) return false
-    const task: Task = { id: crypto.randomUUID(), title: clean.slice(0, 140), done: false, focusSeconds: 0 }
+    const planned = Math.min(12, Math.max(1, Math.round(plannedFocuses)))
+    const task: Task = {
+      id: crypto.randomUUID(),
+      title: clean.slice(0, 140),
+      done: false,
+      focusSeconds: 0,
+      plannedFocuses: Number.isFinite(planned) ? planned : 1,
+      focusCount: 0,
+    }
     setTasks((current) => [task, ...current])
     setSelectedTaskId(task.id)
     return true
+  }
+
+  function setPlannedFocuses(id: string, plannedFocuses: number) {
+    const planned = Math.min(12, Math.max(1, Math.round(plannedFocuses)))
+    if (!Number.isFinite(planned)) return
+    setTasks((current) => current.map((task) => (task.id === id ? { ...task, plannedFocuses: planned } : task)))
   }
 
   function toggleTask(id: string) {
@@ -293,6 +306,26 @@ export function usePomodoro() {
   const canEndFocus = session.phase === 'focus' && elapsed >= 1
 
   useEffect(() => {
+    const previous = previousRemaining.current
+    previousRemaining.current = remaining
+    if (previous == null) return
+    if (
+      !reachesTwoMinutes({
+        enabled: settings.warnTwoMinutes,
+        plannedSec: session.plannedSec,
+        previousRemaining: previous,
+        remaining,
+        running: session.running,
+        alreadyWarned: warnedEntry.current === session.entryId,
+      })
+    ) {
+      return
+    }
+    warnedEntry.current = session.entryId
+    notifyIfHidden(twoMinuteBody(session.phase))
+  }, [remaining, session.entryId, session.phase, session.plannedSec, session.running, settings.warnTwoMinutes])
+
+  useEffect(() => {
     if (session.running) {
       document.title = `${formatRunningTitle(remaining, session.phase)}`
     } else {
@@ -307,10 +340,12 @@ export function usePomodoro() {
     selectedTaskId,
     setSelectedTaskId,
     addTask,
+    setPlannedFocuses,
     toggleTask,
     removeTask,
     clearDone,
     stats,
+    journal,
     session,
     remaining,
     elapsed,

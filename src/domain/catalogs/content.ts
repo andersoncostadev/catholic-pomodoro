@@ -228,6 +228,10 @@ export const faqs = [
     a: 'Enquanto a sessão está correndo, o fim é calculado pelo relógio real e guardado neste navegador. Se você reabrir a página antes do fim, o tempo retoma. Se a fase já tiver acabado com a aba fechada, ela é contada e a seguinte espera você — não começa sozinha depois de uma ausência.',
   },
   {
+    q: 'Como começo sem tirar a mão do teclado?',
+    a: 'Com a página à frente e nenhum painel aberto, Espaço começa ou pausa. T abre o nome da oferta quando nenhum painel está aberto. Escape fecha o painel.',
+  },
+  {
     q: 'Preciso de conta?',
     a: 'Não. Tarefas, sequência, tempos e a frase ficam neste navegador. A liturgia do dia é pedida a liturgia.cloudhub.ia.br, o santo do dia é pedido à API do calendário dos santos, e nenhum dos dois é gravado.',
   },

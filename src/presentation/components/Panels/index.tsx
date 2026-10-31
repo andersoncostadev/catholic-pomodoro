@@ -2,6 +2,10 @@ import { useState } from 'react'
 import { LiturgyPanel } from '@components/Liturgy'
 import { SaintDayPanel } from '@components/SaintDay'
 import { formatSpent } from '@domain/cycle/format-spent'
+import { orderTasks } from '@domain/cycle/order-tasks'
+import { canShowPeriod, periodContaining, periodForKind, periodLabel, shiftPeriod } from '@domain/cycle/period'
+import { rankOfferings } from '@domain/cycle/rank-offerings'
+import { summarizePeriod } from '@domain/cycle/summarize-period'
 import { saints, scenes, youthScenes } from '@domain/catalogs/saints'
 import type { Scene } from '@domain/models/backdrop/scene'
 import type { LiturgyDay } from '@domain/models/liturgy/day'
@@ -60,6 +64,7 @@ function titleOf(panel: Drawer): string {
 
 function Tasks({ pomodoro, onClose }: { pomodoro: PomodoroController; onClose: () => void }) {
   const [draft, setDraft] = useState('')
+  const [planned, setPlanned] = useState(1)
   const { tasks, selectedTaskId } = pomodoro
 
   return (
@@ -74,28 +79,33 @@ function Tasks({ pomodoro, onClose }: { pomodoro: PomodoroController; onClose: (
         />
       </label>
       <form
-        className="add-task"
+        className="offer-form"
         onSubmit={(event) => {
           event.preventDefault()
-          if (!pomodoro.addTask(draft)) return
+          if (!pomodoro.addTask(draft, planned)) return
           setDraft('')
+          setPlanned(1)
           onClose()
         }}
       >
-        <input
-          value={draft}
-          maxLength={140}
-          placeholder="Uma tarefa para este foco"
-          aria-label="Nova tarefa"
-          onChange={(event) => setDraft(event.target.value)}
-        />
-        <button type="submit">Adicionar</button>
+        <Stepper label="Entradas de foco" value={planned} min={1} max={12} unit="" onChange={setPlanned} />
+        <div className="add-task">
+          <input
+            id="offer-name"
+            value={draft}
+            maxLength={140}
+            placeholder="Uma tarefa para este foco"
+            aria-label="Nova tarefa"
+            onChange={(event) => setDraft(event.target.value)}
+          />
+          <button type="submit">Adicionar</button>
+        </div>
       </form>
       {tasks.length === 0 ? (
         <p className="empty">Nada ainda. Dê um nome ao que vai oferecer a Deus no próximo foco.</p>
       ) : (
         <ul className="task-list">
-          {tasks.map((task) => (
+          {orderTasks(tasks).map((task) => (
             <li key={task.id} className={task.done ? 'is-done' : ''}>
               <button
                 type="button"
@@ -112,12 +122,24 @@ function Tasks({ pomodoro, onClose }: { pomodoro: PomodoroController; onClose: (
                 <strong>{task.title}</strong>
                 <small>
                   {selectedTaskId === task.id ? 'Este foco · ' : ''}
+                  {task.focusCount} de {task.plannedFocuses}
+                  {' · '}
                   {task.focusSeconds > 0 ? formatSpent(task.focusSeconds) : 'ainda sem tempo'}
                 </small>
               </button>
               <button type="button" className="remove" aria-label={`Remover ${task.title}`} onClick={() => pomodoro.removeTask(task.id)}>
                 ×
               </button>
+              <div className="task-plan">
+                <Stepper
+                  label="Entradas de foco"
+                  value={task.plannedFocuses}
+                  min={1}
+                  max={12}
+                  unit=""
+                  onChange={(plannedFocuses) => pomodoro.setPlannedFocuses(task.id, plannedFocuses)}
+                />
+              </div>
             </li>
           ))}
         </ul>
@@ -150,13 +172,23 @@ function Settings({ pomodoro, backdrop }: { pomodoro: PomodoroController; backdr
           unit="min"
           onChange={(longPauseMin) => updateSettings({ longPauseMin })}
         />
-        <button
-          type="button"
-          className="text-btn"
-          onClick={() => updateSettings({ offeringMin: 1, focusMin: 25, pauseMin: 5, longPauseMin: 15 })}
-        >
-          Restaurar 1 · 25 · 5 · 15
-        </button>
+        <div className="rhythm-row">
+          <button
+            type="button"
+            className="text-btn"
+            onClick={() => updateSettings({ offeringMin: 1, focusMin: 25, pauseMin: 5, longPauseMin: 15 })}
+          >
+            Restaurar 1 · 25 · 5 · 15
+          </button>
+          <button
+            type="button"
+            className="text-btn"
+            aria-label="Pausa mais longa: 1, 25, 10 e 20"
+            onClick={() => updateSettings({ offeringMin: 1, focusMin: 25, pauseMin: 10, longPauseMin: 20 })}
+          >
+            1 · 25 · 10 · 20
+          </button>
+        </div>
       </section>
       <section>
         <h3>Tipo de pausa</h3>
@@ -178,8 +210,27 @@ function Settings({ pomodoro, backdrop }: { pomodoro: PomodoroController; backdr
           checked={settings.longPauseEnabled}
           onChange={(longPauseEnabled) => updateSettings({ longPauseEnabled })}
         />
-        <Switch label="Passar sozinho para a fase seguinte" checked={settings.autoAdvance} onChange={(autoAdvance) => updateSettings({ autoAdvance })} />
+        <Switch label="Começar a oração sozinha" checked={settings.autoAdvance} onChange={(autoAdvance) => updateSettings({ autoAdvance })} />
         <Switch label="Sino ao terminar" checked={settings.sound} onChange={(sound) => updateSettings({ sound })} />
+        <label className="bell-volume">
+          <span id="bell-volume-label">Volume do sino</span>
+          <strong>{settings.soundVolume}</strong>
+          <input
+            type="range"
+            min={0}
+            max={100}
+            step={1}
+            value={settings.soundVolume}
+            aria-labelledby="bell-volume-label"
+            onChange={(event) => updateSettings({ soundVolume: Number(event.target.value) })}
+          />
+        </label>
+        <Switch label="Repetir o sino" checked={settings.repeatBell} onChange={(repeatBell) => updateSettings({ repeatBell })} />
+        <Switch
+          label="Avisar dois minutos antes"
+          checked={settings.warnTwoMinutes}
+          onChange={(warnTwoMinutes) => updateSettings({ warnTwoMinutes })}
+        />
       </section>
       <section>
         <h3>Cenas</h3>
@@ -331,29 +382,106 @@ function SceneThumb({ scene }: { scene: Scene }) {
 }
 
 function Streak({ pomodoro }: { pomodoro: PomodoroController }) {
-  const { stats } = pomodoro
-  const days = stats.streak
+  const [tab, setTab] = useState<'resumo' | 'ofertas'>('resumo')
+  const [period, setPeriod] = useState(() => periodContaining(new Date(), 'week'))
+  const summary = summarizePeriod(pomodoro.journal, period)
+  const offerings = rankOfferings(pomodoro.journal, period)
+  const previous = shiftPeriod(period, -1)
+  const following = shiftPeriod(period, 1)
+
   return (
     <div className="drawer-body">
-      <p className="streak-count">
-        <strong>{days}</strong>
-        <span>{days === 1 ? 'dia seguido' : 'dias seguidos'}</span>
-      </p>
-      <p>Um dia entra na sequência quando você completa ao menos um foco. Se pular um dia, a contagem recomeça.</p>
-      <ul className="today-list">
-        <li>
-          <span>Orações oferecidas</span>
-          <strong>{stats.offeringsToday}</strong>
-        </li>
-        <li>
-          <span>Focos</span>
-          <strong>{stats.focusToday}</strong>
-        </li>
-        <li>
-          <span>Pausas</span>
-          <strong>{stats.pausesToday}</strong>
-        </li>
-      </ul>
+      <div className="choice" role="tablist" aria-label="Sequência">
+        <button type="button" role="tab" aria-selected={tab === 'resumo'} className={tab === 'resumo' ? 'is-on' : ''} onClick={() => setTab('resumo')}>
+          Resumo
+        </button>
+        <button type="button" role="tab" aria-selected={tab === 'ofertas'} className={tab === 'ofertas' ? 'is-on' : ''} onClick={() => setTab('ofertas')}>
+          Ofertas
+        </button>
+      </div>
+      <div className="period-nav">
+        <button
+          type="button"
+          aria-label="Período anterior"
+          disabled={!canShowPeriod(previous)}
+          onClick={() => setPeriod(previous)}
+        >
+          ←
+        </button>
+        <div className="choice">
+          <button type="button" className={period.kind === 'week' ? 'is-on' : ''} onClick={() => setPeriod((current) => periodForKind(current, 'week'))}>
+            Semana
+          </button>
+          <button type="button" className={period.kind === 'month' ? 'is-on' : ''} onClick={() => setPeriod((current) => periodForKind(current, 'month'))}>
+            Mês
+          </button>
+        </div>
+        <button
+          type="button"
+          aria-label="Período seguinte"
+          disabled={!canShowPeriod(following)}
+          onClick={() => setPeriod(following)}
+        >
+          →
+        </button>
+      </div>
+      <p className="period-label">{periodLabel(period)}</p>
+      {tab === 'resumo' ? (
+        <div role="tabpanel">
+          <ul className="hour-cards">
+            <li>
+              <span>Horas oferecidas</span>
+              <strong>{summary.hoursLabel}</strong>
+            </li>
+            <li>
+              <span>Dias com foco</span>
+              <strong>{summary.focusDays}</strong>
+            </li>
+            <li>
+              <span>Sequência</span>
+              <strong>{pomodoro.stats.streak}</strong>
+            </li>
+          </ul>
+          <div className={summary.scaleHours ? 'hour-chart is-empty' : 'hour-chart'}>
+            {summary.scaleHours ? (
+              <div className="hour-scale" aria-hidden="true">
+                <span>1</span>
+                <span>0</span>
+              </div>
+            ) : null}
+            <div className="hour-scroll">
+              <div className={period.kind === 'month' ? 'hour-bars is-month' : 'hour-bars'}>
+                {summary.bars.map((bar) => (
+                  <div key={bar.key} className="hour-col" role="img" aria-label={bar.accessibleName}>
+                    <div className="hour-track">
+                      <div className="hour-bar" style={{ height: `${bar.share * 100}%` }} />
+                    </div>
+                    <span aria-hidden="true">{bar.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          {summary.empty ? <p className="empty">Nada oferecido neste período.</p> : null}
+          <p>Um dia entra na sequência quando você completa ao menos um foco. Se pular um dia, a contagem recomeça.</p>
+        </div>
+      ) : (
+        <div role="tabpanel">
+          {offerings.length === 0 ? (
+            <p className="empty">Nada oferecido neste período.</p>
+          ) : (
+            <ol className="offer-rank">
+              {offerings.map((offering) => (
+                <li key={offering.id ?? 'sem-nome'}>
+                  <span>{offering.position}</span>
+                  <span>{offering.name}</span>
+                  <strong>{offering.label}</strong>
+                </li>
+              ))}
+            </ol>
+          )}
+        </div>
+      )}
     </div>
   )
 }
@@ -381,7 +509,8 @@ function Stepper({
           −
         </button>
         <strong>
-          {value} {unit}
+          {value}
+          {unit ? ` ${unit}` : ''}
         </strong>
         <button type="button" aria-label={`Aumentar ${label}`} onClick={() => onChange(Math.min(max, value + 1))} disabled={value >= max}>
           +
